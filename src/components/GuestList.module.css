@@ -1,0 +1,237 @@
+.title_text{
+    width: 353px;
+    height: 62px;
+
+    font-family: 'LINE Seed JP_OTF';
+    font-style: normal;
+    font-weight: 800;
+    font-size: 24px;
+    line-height: 130%;
+    /* or 31px */
+    text-align: center;
+
+    /* App/Primary */
+    color: #3F3F3F;
+
+
+    /* Inside auto layout */
+    flex: none;
+    order: 0;
+    align-self: stretch;
+    flex-grow: 0;
+}
+
+.filters_section{
+    margin: 0 0 0 auto;
+    /* Frame 1422243164 */
+
+    /* Auto layout */
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    padding: 0px;
+    gap: 16px;
+
+    height: 28px;
+
+
+    /* Inside auto layout */
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+
+}
+
+.groom_bride_filter_dropdown{
+    /* Frame 1422243162 */
+
+    height: 28px;
+    box-sizing: border-box;
+
+    /* Auto layout */
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 4px 4px 4px 8px;
+    gap: 4px;
+
+    background: #FFFFFF;
+    /* Black */
+    border: 1px solid #111111;
+    border-radius: 4px;
+
+    /* Inside auto layout */
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+
+}
+
+.community_filter_dropdown{
+    /* Frame 1422243163 */
+
+    height: 28px;
+    box-sizing: border-box;
+
+    /* Auto layout */
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 4px 4px 4px 8px;
+    gap: 4px;
+
+    background: #FFFFFF;
+    /* Black */
+    border: 1px solid #111111;
+    border-radius: 4px;
+
+    /* Inside auto layout */
+    flex: none;
+    order: 1;
+    flex-grow: 0;
+}
+
+.filtering_text{
+    /* 職場の同僚 */
+    font-family: 'Hiragino Kaku Gothic Pro';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 120%;
+    /* or 14px */
+    display: flex;
+    align-items: flex-end;
+    text-align: center;
+
+    /* Black */
+    color: #111111;
+
+
+    /* Inside auto layout */
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+
+
+}
+
+.guest_list_section{
+    /* Frame 625711 */
+
+    /* Auto layout */
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0px;
+    gap: 24px;
+
+    width: 345px;
+    height: 426px;
+
+
+    /* Inside auto layout */
+    flex: none;
+    order: 1;
+    flex-grow: 0;
+
+}
+
+.guest_item{
+    /* Frame 625709 */
+
+    /* Auto layout */
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0px;
+    gap: 87px;
+
+    width: 345px;
+    height: 26px;
+
+
+    /* Inside auto layout */
+    flex: none;
+    order: 0;
+    align-self: stretch;
+    flex-grow: 0;
+
+}
+
+.guest_name{
+    /* いとうたくみ様 */
+
+    margin: 0 0 auto 0;
+
+    font-family: 'LINE Seed JP_OTF';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 130%;
+    /* identical to box height, or 26px */
+
+    /* App/Primary */
+    color: #3F3F3F;
+
+
+    /* Inside auto layout */
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+
+}
+
+.guest_edit_section{
+    /* Frame 625705 */
+
+    /* Auto layout */
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 0px;
+    gap: 8px;
+
+    margin: 0 0 0 auto;
+    width: 95px;
+    height: 24px;
+
+
+    /* Inside auto layout */
+    flex: none;
+    order: 1;
+    flex-grow: 0;
+}
+
+.guest_edit_text{
+    /* 編集する */
+
+    height: 21px;
+
+    font-family: 'LINE Seed JP_OTF';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 130%;
+    /* identical to box height, or 21px */
+
+    /* App/Primary */
+    color: #3F3F3F;
+
+
+    /* Inside auto layout */
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+
+}
+
+.edit_img{
+    /* Edit / Edit_Pencil_01 */
+    width: 24px;
+    height: 24px;
+    background-color: white;
+
+}

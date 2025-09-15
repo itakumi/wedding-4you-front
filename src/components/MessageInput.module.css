@@ -1,0 +1,93 @@
+.title_text{
+    /* メッセージ入力 */
+
+    width: 353px;
+    height: 31px;
+    left: 18px;
+    top: 70px;
+
+    font-family: 'LINE Seed JP_OTF';
+    font-style: normal;
+    font-weight: 800;
+    font-size: 24px;
+    line-height: 130%;
+    /* or 31px */
+    text-align: center;
+
+    /* App/Primary */
+    color: #3F3F3F;
+
+
+}
+
+.text_area{
+    /* Frame 625703 */
+
+    box-sizing: border-box;
+
+    /* Auto layout */
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    padding: 16px;
+    gap: 10px;
+
+    width: 353px;
+    height: 549px;
+    left: 18px;
+    top: 136px;
+
+    background: #FFFFFF;
+    /* App/Primary */
+    border: 1px solid #3F3F3F;
+
+}
+
+.confirm_button{
+    /* Frame 625640 */
+
+    box-sizing: border-box;
+
+    /* Auto layout */
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 12px 32px;
+
+    display: block;
+    margin: 0 auto;
+    width: 167px;
+    height: 56px;
+    left: 113px;
+    top: 705px;
+
+    /* App/Primary */
+    background: #3F3F3F;
+    /* App/Primary */
+    border: 2px solid #3F3F3F;
+    border-radius: 16px;
+}
+
+.confirm_text{
+    /* 確認する */
+
+    height: 22px;
+
+    font-family: 'LINE Seed JP_OTF';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 120%;
+    /* identical to box height, or 22px */
+    text-align: center;
+
+    color: #FFFFFF;
+
+
+    /* Inside auto layout */
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+
+}

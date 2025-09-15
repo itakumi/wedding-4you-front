@@ -1,0 +1,120 @@
+.comment {
+    /* お手数ですが、台紙に記載のシリアルコードを 入力してください */
+
+    width: 353px;
+    height: 40px;
+
+    font-family: 'LINE Seed JP_OTF';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 13px;
+    line-height: 150%;
+    /* or 20px */
+    text-align: center;
+
+    /* App/Primary */
+    color: #3F3F3F;
+}
+
+.name_label {
+    width: 353px;
+    height: 31px;
+    opacity: 1;
+
+    font-family: LINE Seed JP_OTF;
+    font-weight: 800;
+    font-style: ExtraBold;
+    font-size: 24px;
+    line-height: 130%;
+    letter-spacing: 0%;
+    text-align: center;
+}
+
+.serialcode_input {
+    /* Frame 557 */
+
+    /* Auto layout */
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 0px;
+    gap: 8px;
+
+    display: block;
+    width: 187px;
+    height: 26px;
+    margin: 0 auto;
+    text-align: center;
+    font-family: LINE Seed JP_OTF;
+    font-weight: 400;
+    font-style: Regular;
+    font-size: 22px;
+    line-height: 120%;
+    letter-spacing: 10%;
+    text-align: center;
+
+
+    /* Inside auto layout */
+    order: 0;
+    flex-grow: 0;
+
+    border: none;
+    border-bottom: 2px solid #ccc;
+    border-radius: 0;
+    outline: none;
+    background: transparent;
+}
+
+.next_button {
+    /* Frame 625640 */
+
+    box-sizing: border-box;
+
+    /* Auto layout */
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 12px 32px;
+
+    display: block;
+    width: 150px;
+    height: 56px;
+    margin: 0 auto;
+    text-align: center;
+    
+    /* App/Primary */
+    background: #3F3F3F;
+    /* App/Primary */
+    border: 2px solid #3F3F3F;
+    border-radius: 16px;
+
+    /* Inside auto layout */
+    flex: none;
+    order: 3;
+    flex-grow: 0;
+
+}
+
+.next_text{
+    /* つぎへ */
+
+    width: 54px;
+    height: 22px;
+
+    font-family: 'LINE Seed JP_OTF';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 120%;
+    /* identical to box height, or 22px */
+    text-align: center;
+
+    color: #FFFFFF;
+
+
+    /* Inside auto layout */
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+}

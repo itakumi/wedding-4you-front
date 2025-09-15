@@ -1,0 +1,141 @@
+.title_text{
+    /* 動画アップロード */
+
+    width: 347px;
+    height: 31px;
+
+    font-family: 'LINE Seed JP_OTF';
+    font-style: normal;
+    font-weight: 800;
+    font-size: 24px;
+    line-height: 130%;
+    /* or 31px */
+    text-align: center;
+
+    /* App/Primary */
+    color: #3F3F3F;
+
+
+    /* Inside auto layout */
+    flex: none;
+    order: 0;
+    align-self: stretch;
+    flex-grow: 0;
+
+}
+
+.subtitle_text{
+    /* 思い出の動画をアップロードしましょう */
+
+    width: 347px;
+    height: 23px;
+
+    font-family: 'LINE Seed JP_OTF';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 130%;
+    /* or 23px */
+    text-align: center;
+
+    /* App/Primary */
+    color: #3F3F3F;
+
+
+    /* Inside auto layout */
+    flex: none;
+    order: 1;
+    align-self: stretch;
+    flex-grow: 0;
+
+}
+
+.video_upload_area{
+    /* Frame 1422243166 */
+
+    box-sizing: border-box;
+
+    /* Auto layout */
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 92px 94px;
+    gap: 10px;
+
+    height: 345px;
+
+    border: 2px dashed #C4C4C4;
+    border-radius: 8px;
+
+    /* Inside auto layout */
+    flex: none;
+    order: 2;
+    align-self: stretch;
+    flex-grow: 0;
+
+}
+
+.video_upload_box{
+    /* Frame 1422243165 */
+
+    /* Auto layout */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0px;
+    gap: 8px;
+
+    height: 140px;
+
+
+    /* Inside auto layout */
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+
+}
+
+.video_upload_icon{
+    /* Frame 1422243165 */
+
+    /* Auto layout */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0px;
+    gap: 8px;
+
+    height: 140px;
+
+
+    /* Inside auto layout */
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+
+}
+
+.video_upload_text{
+    /* 動画アップロード */
+
+    height: 26px;
+
+    font-family: 'LINE Seed JP_OTF';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 130%;
+    /* identical to box height, or 26px */
+    text-align: center;
+
+    /* App/Secondary */
+    color: #797979;
+
+
+    /* Inside auto layout */
+    flex: none;
+    order: 1;
+    align-self: stretch;
+    flex-grow: 0;
+
+}

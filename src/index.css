@@ -5,9 +5,30 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+.center-container-backup {
+  display: flex;
+  flex-direction: column; /* 子要素を縦に並べる（デフォルトは横並びなので変更） */
+  align-items: center;     /* 交差軸方向（この場合横方向）の中央揃え */
+
+  /* ★★★ ここが重要 ★★★ */
+  /* 親要素に高さを設定しないと、垂直方向の中央揃えは機能しません。 */
+  min-height: 100vh; /* 例: ビューポートの高さ全体で中央揃えにしたい場合 */
+  /* または固定の高さ: height: 500px; */
+
+  border: 1px solid blue; /* わかりやすくするためのボーダー */
+}
+
+div.center-container{
+  margin-right: auto;
+  margin-left : auto;
+  display: grid; 
+  justify-content: center;
 }
