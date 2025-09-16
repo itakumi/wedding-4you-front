@@ -38,7 +38,8 @@ export function GuestList({ appState, updateState }: GuestListProps) {
           console.log('Fetched guests:', data.guests);
 
           // data オブジェクトに 'guests' というキーが存在し、その値だけを格納したい場合
-          updateState({ guests: data.guests });
+          setGuests(data.guests);
+          // updateState({ guests: data.guests });
         } catch (e: any) {
           // エラーが発生した場合、エラーメッセージをstateに格納
           console.error("Failed to fetch guests:", e);
@@ -54,30 +55,29 @@ export function GuestList({ appState, updateState }: GuestListProps) {
     }, []); 
 
     const communities = useMemo(() => {
-    const uniqueCommunities = [...new Set(appState.guests.map(guest => guest.community))];
+    const uniqueCommunities = [...new Set(guests.map(guest => guest.community))];
         return ['すべて', ...uniqueCommunities];
-    }, []);
+    }, [guests]);
 
     // フィルターされたゲストリストの計算（useMemoで最適化）
     const filteredGuests = useMemo(() => {
-        return appState.guests.filter(guest => {
+        return guests.filter(guest => {
         const matchesType = selectedType === 'すべて' || guest.invited_by === selectedType;
         const matchesCommunity = selectedCommunity === 'すべて' || guest.community === selectedCommunity;
         return matchesType && matchesCommunity;
         });
-    }, [selectedType, selectedCommunity]); 
+    }, [guests, selectedType, selectedCommunity]); 
 
     const editGuest = (guest: Guest) => {
       updateState({ currentScreen: 'message-setup', selectedGuest: guest });
     }
-    console.log(appState.guests);
+    console.log(guests);
     console.log(filteredGuests)
 
     if (loading) {
       return (
         <div style={{ padding: '20px', textAlign: 'center' }}>
           <p>ゲストデータを読み込み中...</p>
-          {/* ローディングスピナーなどのUIを追加することもできます */}
         </div>
       );
     }

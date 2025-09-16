@@ -35,34 +35,42 @@ export function OnboardingScreen({ appState, updateState }: OnboardingScreenProp
 
   const handleNext = async () => {
     console.log('新郎:', groomName.trim(), '新婦:', brideName.trim());
-    // const postData = {
-    //   groom_name: groomName.trim(),
-    //   bride_name: brideName.trim()
-    // }
-    //   try {
-    //     const response = await fetch(
-    //       process.env.REACT_APP_BACKEND_ENTRYPOINT + "/couple/register",
-    //       {
-    //         method: "POST",
-    //         headers: {
-    //           "Content-Type": "application/json",
-    //         },
-    //         body: JSON.stringify(postData),
-    //       }
-    //     );
-    //     const data = await response.text();
-    //     console.log(data);
-    //     // console.log("取得したデータ:", data);
-    //   } catch (error) {
-    //     console.error("データの取得に失敗しました", error);
-    //   }    
-    if (groomName.trim() && brideName.trim()) {
-      updateState({
-        coupleData: { groom_name: groomName.trim(), bride_name: brideName.trim() },
-        currentScreen: 'couple-home',
-        userType: 'couple'
-      });
+    const postData = {
+      groom_name: groomName.trim(),
+      bride_name: brideName.trim(),
+      password: "password"
     }
+      try {
+        const response = await fetch(
+          process.env.REACT_APP_BACKEND_ENTRYPOINT + "/couple/login",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(postData),
+          }
+        );
+        const data = await response.json();
+        if (response.ok) {
+          if (groomName.trim() && brideName.trim()) {
+            updateState({
+              coupleData: { groom_name: groomName.trim(), bride_name: brideName.trim() },
+              currentScreen: 'couple-home',
+              userType: 'couple'
+            });
+          }
+        } else{
+          alert(data.message || "ログインに失敗しました");
+          throw new Error(data.message || "ログインに失敗しました");
+        }
+        console.log(data.couple.id);
+        console.log(data.couple.groom_name);
+        console.log(data.couple.bride_name);
+        // console.log("取得したデータ:", data);
+      } catch (error) {
+        console.error("データの取得に失敗しました", error);
+      }
   };
 
   return (

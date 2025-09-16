@@ -10,7 +10,7 @@ interface MessageInputProps {
 export function MessageInput({ appState, updateState }: MessageInputProps) {
     const [message, setMessage] = useState('');
     const handleConfirm = () => {
-        updateState({ currentScreen: 'message-confirm', message: { ...appState.message, content: message } });
+        updateState({ currentScreen: 'message-confirm', message: { ...appState.message, message_content: message } });
     };
   return (
     <>

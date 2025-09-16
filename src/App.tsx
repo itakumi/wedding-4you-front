@@ -31,8 +31,8 @@ export interface Guest {
 }
 
 export interface Card {
-  template: string;
-  content: string;
+  template_url: string;
+  message_content: string;
 }
 
 export interface GuestWithMessage extends Guest {
@@ -48,7 +48,6 @@ export interface AppState {
   userType: UserType | null;
   coupleData: CoupleData;
   selectedGuest?: Guest | null;
-  guests: Guest[];
   message: Card;
   messages: {
     cards: Card[];
@@ -61,10 +60,9 @@ function App() {
   const [appState, setAppState] = useState<AppState>({
     currentScreen: 'onboarding',
     userType: null,
-    message: { template: '', content: '' },
+    message: { template_url: '', message_content: '' },
     coupleData: { groom_name: '', bride_name: '' },
     selectedGuest: null,
-    guests: [],
     messages: { cards: [], videos: [], images: [] }
   });
 

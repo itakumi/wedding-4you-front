@@ -18,7 +18,7 @@ export function MessagePreparation({ appState, updateState }: MessagePreparation
   const templates = [
     {
       src: 'images/sample_template.png',
-      action: () => updateState({ currentScreen: 'message-input', message: { template: 'images/sample_template.png', content: '' } }),
+      action: () => updateState({ currentScreen: 'message-input', message: { template_url: 'images/sample_template.png', message_content: '' } }),
     },
     {
       src: 'images/sample_template.png',

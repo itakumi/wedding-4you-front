@@ -7,16 +7,39 @@ interface MessageConfirmProps {
 }
 
 export function MessageConfirm({ appState, updateState }: MessageConfirmProps) {
-    const handleComplete = () => {
-        updateState({ 
-          currentScreen: 'guest-list', 
-          messages: { 
-            ...appState.messages,
-            cards: [...appState.messages.cards, appState.message],
-            videos: appState.messages.videos,
-            images: appState.messages.images
-          }  
-        });    
+  console.log(appState.message.message_content)
+    const handleComplete = async () => {
+      const postData = {
+        couple_id: 1, // 仮のカップルID
+        guest_id: appState.selectedGuest?.id,
+        template_url: appState.message.template_url,
+        message_content: appState.message.message_content
+      };
+      try {
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_ENTRYPOINT}/card/register`, { // エンドポイントはバックエンドに合わせて調整
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            // 必要に応じて認証ヘッダーなどを追加
+            // 'Authorization': `Bearer ${yourAuthToken}`,
+          },
+          body: JSON.stringify(postData),
+        });
+        const data = await response.json();
+        if (response.ok){
+          alert(data.message || "メッセージカードが正常に登録されました。");
+          updateState({ 
+            currentScreen: 'guest-list', 
+          });    
+        }else{
+          alert(data.message || "メッセージカードの登録に失敗しました");
+          throw new Error(data.message || 'メッセージカードの登録に失敗しました');
+        }
+
+      } catch (error) {
+        console.error('メッセージカードの登録中にエラーが発生しました:', error);
+        throw error;
+      }      
     };
   return (
     <>
@@ -31,7 +54,7 @@ export function MessageConfirm({ appState, updateState }: MessageConfirmProps) {
         完成イメージ
       </label>
       <div className='mt-5'/>
-      <img className={styles.output_image} src={appState.message.template} alt='template'/>
+      <img className={styles.output_image} src={appState.message.template_url} alt='template'/>
       <div className='mt-5'/>
       <button
           onClick={handleComplete}
