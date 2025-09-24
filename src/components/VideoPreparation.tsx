@@ -1,5 +1,6 @@
-import { AppState, Guest } from '../App';
+import { AppState } from '../App';
 import styles from './VideoPreparation.module.css'
+import { callApi } from '../utils/api';
 
 interface VideoPreparationProps {
   appState: AppState;
@@ -11,9 +12,32 @@ export function VideoPreparation({ appState, updateState }: VideoPreparationProp
   const handleVideoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      // Here you can handle the uploaded video file
-      alert(`動画「${file.name}」をアップロードしました`);
-      // For example, you might want to store the file in the app state or upload it to a server
+      const reader = new FileReader();
+      reader.onloadend = async() => {
+        const arrayBuffer = reader.result as ArrayBuffer;
+        const postData = {
+          video_data: arrayBuffer,
+          video_type: file.type,
+          id: appState.selectedGuest?.id,
+          couple_id: appState.coupleData?.id,
+          guest_id: appState.selectedGuest?.guest_id,
+        }
+        try {
+          const data = await callApi(
+            process.env.REACT_APP_BACKEND_ENTRYPOINT + "/media/video/upload",
+            "POST",
+            postData
+          );
+          alert("動画アップロード成功");
+          updateState({
+            currentScreen: 'guest-list'
+          });
+        } catch (error) {
+          alert((error as any)?.message || "動画のアップロードに失敗しました");
+          console.error("データの取得に失敗しました", error);
+        }
+      };
+      reader.readAsDataURL(file);
     }
   }
   return (

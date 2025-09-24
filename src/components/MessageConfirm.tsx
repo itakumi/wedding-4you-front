@@ -1,23 +1,37 @@
-import { AppState, Guest } from '../App';
+import { AppState } from '../App';
 import styles from './MessageConfirm.module.css'
-
+import { useCookies } from 'react-cookie';
+import { callApi } from '../utils/api';
 interface MessageConfirmProps {
   appState: AppState;
   updateState: (updates: Partial<AppState>) => void;
 }
 
 export function MessageConfirm({ appState, updateState }: MessageConfirmProps) {
-    const handleComplete = () => {
-        updateState({ 
-          currentScreen: 'guest-list', 
-          messages: { 
-            ...appState.messages,
-            cards: [...appState.messages.cards, appState.message],
-            videos: appState.messages.videos,
-            images: appState.messages.images
-          }  
-        });    
+  const [cookies] = useCookies(["access_token"]);
+  const handleComplete = async () => {
+    const postData = {
+      couple_id: appState.coupleData?.id,
+      guest_id: appState.selectedGuest?.guest_id,
+      template_url: appState.message?.template_url,
+      message_content: appState.message?.message_content,
     };
+    try {
+      const data = await callApi(
+        `${process.env.REACT_APP_BACKEND_ENTRYPOINT}/card/register`,
+        'POST',
+        postData,
+        cookies.access_token
+      );
+      alert(data.message);
+      updateState({ 
+        currentScreen: 'guest-list', 
+      });    
+    } catch (error) {
+      console.error('メッセージカードの登録中にエラーが発生しました:', error);
+      throw error;
+    }      
+  };
   return (
     <>
     <button 
@@ -31,7 +45,7 @@ export function MessageConfirm({ appState, updateState }: MessageConfirmProps) {
         完成イメージ
       </label>
       <div className='mt-5'/>
-      <img className={styles.output_image} src={appState.message.template} alt='template'/>
+      <img className={styles.output_image} src={appState.message?.template_url} alt='template'/>
       <div className='mt-5'/>
       <button
           onClick={handleComplete}
@@ -40,7 +54,6 @@ export function MessageConfirm({ appState, updateState }: MessageConfirmProps) {
           <span className={styles.complete_text}>確認する→</span>
       </button>
     </div>
-    {/* {appState.message.content} */}
     </>
     );
 }

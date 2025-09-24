@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { AppState } from '../App';
 import styles from './NameConflict.module.css'
+import { callApi } from '../utils/api';
+
 
 interface NameConflictProps {
   appState: AppState;
@@ -10,15 +12,36 @@ interface NameConflictProps {
 export function NameConflict({ appState, updateState }: NameConflictProps) {
   const [serialCode, setSerialCode] = useState('');
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (serialCode.trim()) {
-      // 仮の処理。実際にはシリアルコードの検証などを行う。
-      console.log('シリアルコード:', serialCode.trim());
-
-      // updateState({
-      //   currentScreen: 'couple-home',
-      //   userType: 'couple'
-      // });
+      const postData = {
+        inviter_name: appState.guestLoginInfo?.inviter_name,
+        guest_name: appState.guestLoginInfo?.guest_name,
+        serial_code: serialCode.trim()
+      }
+      try {
+        const data = await callApi(
+          process.env.REACT_APP_BACKEND_ENTRYPOINT + "/guest/login/serial",
+          "POST",
+          postData
+        );
+        if (data.status === 'not_found') {
+          alert("シリアルコードが一致しません");
+          return;
+        } else if (data.status === 'multiple_found') {
+          alert("同じシリアルコードの方が複数います。運営にお問い合わせください");
+          return;
+        } else {
+          console.log("ログイン成功:", data);
+          updateState({
+            currentScreen: 'view-message',
+            userType: 'guest',
+            message: data.card,
+          });
+        }
+      } catch (error) {
+        console.error("エラーが発生しました:", error);
+      }
     }
   };
   return (

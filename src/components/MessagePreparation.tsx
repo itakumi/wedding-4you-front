@@ -1,24 +1,18 @@
 import React from 'react';
-import { AppState, Guest } from '../App';
+import { AppState } from '../App';
 import styles from './MessagePreparation.module.css'
+import { separateButtons } from '../utils/utils';
 
 interface MessagePreparationProps {
   appState: AppState;
   updateState: (updates: Partial<AppState>) => void;
-}
-function separateButtons<T>(array: T[], size: number): T[][] {
-  const result: T[][] = [];
-  for (let i = 0; i < array.length; i += size) {
-    result.push(array.slice(i, i + size));
-  }
-  return result;
 }
 
 export function MessagePreparation({ appState, updateState }: MessagePreparationProps) {
   const templates = [
     {
       src: 'images/sample_template.png',
-      action: () => updateState({ currentScreen: 'message-input', message: { template: 'images/sample_template.png', content: '' } }),
+      action: () => updateState({ currentScreen: 'message-input', message: { template_url: 'images/sample_template.png', message_content: '' } }),
     },
     {
       src: 'images/sample_template.png',

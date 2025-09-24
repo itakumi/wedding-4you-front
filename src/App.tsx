@@ -11,61 +11,67 @@ import { MessageInput } from './components/MessageInput';
 import { MessageConfirm } from './components/MessageConfirm';
 import { NameConflict } from './components/NameConflict';
 import { GuestLogin } from './components/GuestLogin';
-// import { GuestFlow } from './components/GuestFlow';
+import { SignIn } from './components/UserSignIn';
+import { ViewMessage } from './components/ViewMessage';
 import './App.css';
 
+//TODO:
+// APIコールを同じページで2回以上行うと、2回目以降が失敗することがある。
+
 export type UserType = 'couple' | 'guest';
-export type Screen = 'onboarding' | 'guest-login' | 'name-conflict' | 'couple-home' | 'guest-registration' | 'guest-list' | 'message-setup' | 'message-preparation'| 'message-input' | 'message-confirm' | 'video-preparation' | 'image-preparation'| 'guest-flow';
+export type Screen = 'sign-in' | 'onboarding' | 'guest-login' | 'view-message' | 'name-conflict' | 'couple-home' | 'guest-registration' | 'guest-list' | 'message-setup' | 'message-preparation'| 'message-input' | 'message-confirm' | 'video-preparation' | 'image-preparation';
 
 export interface CoupleData {
+  id: number;
   groom_name: string;
   bride_name: string;
 }
 
 export interface Guest {
-  id?: number;
+  id: number;
+  guest_id: number;
   couple_id: number;
   guest_name: string;
   invited_by: '新郎' | '新婦';
   community: string;
+  has_message: boolean;
+  has_image: boolean;
+  has_video: boolean;
 }
 
 export interface Card {
-  template: string;
-  content: string;
+  template_url: string;
+  message_content: string;
+  image_url?: string;
+  video_url?: string;
 }
 
-export interface GuestWithMessage extends Guest {
-  messages: {
-    cards: Card[];
-    videos: string[];
-    images: string[];
-  };
+export interface GuestLoginInfo {
+  inviter_name: string;
+  guest_name: string;
+  serial_code?: string;
 }
 
 export interface AppState {
   currentScreen: Screen;
   userType: UserType | null;
-  coupleData: CoupleData;
+  coupleData: CoupleData | null;
   selectedGuest?: Guest | null;
-  guests: Guest[];
-  message: Card;
-  messages: {
-    cards: Card[];
-    videos: string[];
-    images: string[];
-  };
+  message: Card | null;
+  guestLoginInfo?: GuestLoginInfo | null;
 }
 
 function App() {
   const [appState, setAppState] = useState<AppState>({
-    currentScreen: 'onboarding',
+    currentScreen: 'sign-in',
     userType: null,
-    message: { template: '', content: '' },
-    coupleData: { groom_name: '', bride_name: '' },
+    message: null,
+    coupleData: null,
     selectedGuest: null,
-    guests: [],
-    messages: { cards: [], videos: [], images: [] }
+    guestLoginInfo: {
+      inviter_name: '',
+      guest_name: '',
+    },
   });
 
   const updateState = (updates: Partial<AppState>) => {
@@ -74,11 +80,12 @@ function App() {
 
   const renderCurrentScreen = () => {
     switch (appState.currentScreen) {
+      case 'sign-in':
+        return <SignIn appState={appState} updateState={updateState} />;
       case 'onboarding':
-        console.log('onboarding');
-        // return <NameConflict appState={appState} updateState={updateState} />;
-        // return <GuestLogin appState={appState} updateState={updateState} />;
         return <OnboardingScreen appState={appState} updateState={updateState} />;
+      case 'view-message':
+        return <ViewMessage appState={appState} updateState={updateState} />;
       case 'guest-login':
         return <GuestLogin appState={appState} updateState={updateState} />;
       case 'name-conflict':
@@ -101,9 +108,6 @@ function App() {
         return <VideoPreparation appState={appState} updateState={updateState} />;
       case 'image-preparation':
         return <ImagePreparation appState={appState} updateState={updateState} />;
-      case 'guest-flow':
-        // return <GuestFlow appState={appState} updateState={updateState} />;
-        return <div>Guest Flow Placeholder</div>; // 仮
       default:
         console.log("default");
         return <div>default</div>;
