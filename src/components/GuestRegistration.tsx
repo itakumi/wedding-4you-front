@@ -1,36 +1,32 @@
-import React, { useState } from 'react';
-import { AppState, Guest } from '../App';
+import React from 'react';
+import { AppState } from '../App';
 import styles from './GuestRegistration.module.css'
+import { useCookies } from 'react-cookie';
+import { callApi } from '../utils/api';
 
 interface GuestRegistrationProps {
   appState: AppState;
   updateState: (updates: Partial<AppState>) => void;
 }
 
+interface GuestPostData {
+  couple_id?: number;
+  guest_name: string;
+  invited_by: '新郎' | '新婦';
+  community: string;
+}
+
 export function GuestRegistration({ appState, updateState }: GuestRegistrationProps) {
-  const [showManualInput, setShowManualInput] = useState(false);
-  const [guestName, setGuestName] = useState('');
-  const [invitedBy, setInvitedBy] = useState<'新郎' | '新婦'>('新郎');
+  const [cookies] = useCookies(["access_token", "id"]);
 
-  const uploadGuestsBatch = async (guests: Guest[]): Promise<void> => {
+  const uploadGuestsBatch = async (guests: GuestPostData[]): Promise<void> => {
     try {
-      const response = await fetch(`${process.env.REACT_APP_BACKEND_ENTRYPOINT}/guest/register/batch`, { // エンドポイントはバックエンドに合わせて調整
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          // 必要に応じて認証ヘッダーなどを追加
-          // 'Authorization': `Bearer ${yourAuthToken}`,
-        },
-        body: JSON.stringify(guests),
-      });
-      const data = await response.json();
-      if (response.ok){
-        alert(data.message || "ゲストデータが正常にアップロードされました。");
-      }else{
-        alert(data.message || "ゲストのアップロードに失敗しました");
-        throw new Error(data.message || 'ゲストのアップロードに失敗しました');
-      }
-
+      const data = await callApi(
+        `${process.env.REACT_APP_BACKEND_ENTRYPOINT}/guest/register/batch`,
+        'POST',
+        guests,
+        cookies.access_token
+      );
     } catch (error) {
       console.error('ゲストデータのアップロード中にエラーが発生しました:', error);
       throw error;
@@ -46,7 +42,7 @@ export function GuestRegistration({ appState, updateState }: GuestRegistrationPr
       reader.onload = async (e) => {
         const csv = e.target?.result as string;
         const lines = csv.split('\n');
-        const guests: Guest[] = [];
+        const guests: GuestPostData[] = [];
 
         lines.slice(1).forEach((line, index) => {
           const parts = line.split(',');
@@ -57,7 +53,7 @@ export function GuestRegistration({ appState, updateState }: GuestRegistrationPr
 
           if (name && name.trim()) {
             guests.push({
-              couple_id: 1,
+              couple_id: appState.coupleData?.id,
               guest_name: name.trim(),
               invited_by: inviter?.trim().toLowerCase() === '新婦' ? '新婦' : '新郎',
               community: community?.trim() || '未設定', // communityがundefinedになる可能性を考慮
@@ -67,10 +63,7 @@ export function GuestRegistration({ appState, updateState }: GuestRegistrationPr
 
         if (guests.length > 0) {
           try {
-            // バックエンドにデータを送信
-            console.log('Uploading guests to backend:', guests);
             await uploadGuestsBatch(guests);
-            // 成功した場合のみ、フロントエンドのステートを更新
             alert(`${guests.length}名のゲストを追加しました`);
           } catch (error) {
             alert(`ゲストの追加中にエラーが発生しました: ${
@@ -88,47 +81,25 @@ export function GuestRegistration({ appState, updateState }: GuestRegistrationPr
   };
 
   const handleManualAdd = async () => {
-    const guest: Guest = {
-      couple_id: 1,
-      guest_name: 'ゲスト名前',
+    const postGuest = {
+      couple_id: appState.coupleData?.id,
+      guest_name: 'げすと',
       invited_by: '新郎',
       community: '未設定'
     };    
     try {
-      const response = await fetch(`${process.env.REACT_APP_BACKEND_ENTRYPOINT}/guest/register`, { // エンドポイントはバックエンドに合わせて調整
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          // 必要に応じて認証ヘッダーなどを追加
-          // 'Authorization': `Bearer ${yourAuthToken}`,
-        },
-        body: JSON.stringify(guest),
-      });
-      const data = await response.json();
-      if (response.ok){
-        alert(data.message || "ゲストデータが正常にアップロードされました。");
-      }else{
-        alert(data.message || "ゲストのアップロードに失敗しました");
-        throw new Error(data.message || 'ゲストのアップロードに失敗しました');
-      }
-
+      const data = await callApi(
+        `${process.env.REACT_APP_BACKEND_ENTRYPOINT}/guest/register`,
+        'POST',
+        postGuest,
+        cookies.access_token
+      );
+      alert(data.message);
     } catch (error) {
       console.error('ゲストデータのアップロード中にエラーが発生しました:', error);
       throw error;
     }
-    // if (guestName.trim()) {
-    //   const newGuest: Guest = {
-    //     couple_id: 1,
-    //     guest_name: guestName.trim(),
-    //     invited_by: invitedBy === '新郎' ? '新郎' : '新婦',
-    //     community: '未設定'
-    //   };
-    //   // updateState({ guests: [...appState.guests, newGuest] });
-    //   setGuestName('');
-    //   alert('ゲストを追加しました');
-    // }
   };
-
   return (
     <>
     <button 

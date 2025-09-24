@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { AppState } from '../App';
 import styles from './OnboardingScreen.module.css';
+import { callApi } from '../utils/api';
 
 interface GuestLoginProps {
   appState: AppState;
@@ -10,12 +11,11 @@ interface GuestLoginProps {
 export function GuestLogin({ appState, updateState }: GuestLoginProps) {
   const [invitedName, setInvitedName] = useState('');
   const [guestName, setGuestName] = useState('');
-  const hiraganaRegex = /^[\u3040-\u309F]*$/;
   const isComposing = useRef(false);
 
   const handleInvitedNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (isComposing.current) {
-      setInvitedName(e.target.value); // 変換中はそのまま
+      setInvitedName(e.target.value);
       return;
     }
     const inputValue = e.target.value;
@@ -25,7 +25,7 @@ export function GuestLogin({ appState, updateState }: GuestLoginProps) {
 
   const handleGuestNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (isComposing.current) {
-      setGuestName(e.target.value); // 変換中はそのまま
+      setGuestName(e.target.value);
       return;
     }
     const inputValue = e.target.value;
@@ -33,13 +33,42 @@ export function GuestLogin({ appState, updateState }: GuestLoginProps) {
     setGuestName(filteredValue);
   };
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (invitedName.trim() && guestName.trim()) {
-      console.log('招待者:', invitedName.trim(), 'ゲスト:', guestName.trim());
-      // updateState({
-      //   currentScreen: 'couple-home',
-      //   userType: 'couple'
-      // });
+      const postData = {
+        inviter_name: invitedName.trim(),
+        guest_name: guestName.trim()
+      }
+      try {
+        const data = await callApi(
+          process.env.REACT_APP_BACKEND_ENTRYPOINT + "/guest/login",
+          "POST",
+          postData
+        );
+        if (data.status === 'multiple_found'){
+          updateState({
+            currentScreen: 'name-conflict',
+            guestLoginInfo: {
+              inviter_name: invitedName.trim(),
+              guest_name: guestName.trim(),
+            },
+          });
+          return;
+        } else if (data.status === 'not_found') {
+          alert(data.message || "招待者名、またはゲスト名が一致しません");
+          return;
+        } else {
+          console.log("ログイン成功:", data);
+          updateState({
+            currentScreen: 'view-message',
+            userType: 'guest',
+            message: data.card,
+          });
+        }
+      } catch (error: any) {
+        alert(error?.message || "招待者名、またはゲスト名が一致しません");
+        console.error("ログインに失敗しました", error);
+      }
     }
   };
 

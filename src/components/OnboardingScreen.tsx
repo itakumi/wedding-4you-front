@@ -1,6 +1,8 @@
 import React, { useState, useRef } from 'react';
+import { useCookies } from 'react-cookie';
 import { AppState } from '../App';
 import styles from './OnboardingScreen.module.css';
+import { callApi } from '../utils/api';
 
 interface OnboardingScreenProps {
   appState: AppState;
@@ -10,8 +12,8 @@ interface OnboardingScreenProps {
 export function OnboardingScreen({ appState, updateState }: OnboardingScreenProps) {
   const [groomName, setGroomName] = useState('');
   const [brideName, setBrideName] = useState('');
-  const hiraganaRegex = /^[\u3040-\u309F]*$/;
   const isComposing = useRef(false);
+  const [cookies,, removeCookie] = useCookies(["access_token", "id"]);
 
   const handleGroomNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (isComposing.current) {
@@ -34,47 +36,45 @@ export function OnboardingScreen({ appState, updateState }: OnboardingScreenProp
   };
 
   const handleNext = async () => {
-    console.log('新郎:', groomName.trim(), '新婦:', brideName.trim());
     const postData = {
+      id: cookies.id,
       groom_name: groomName.trim(),
       bride_name: brideName.trim(),
       password: "password"
     }
       try {
-        const response = await fetch(
+        const data = await callApi(
           process.env.REACT_APP_BACKEND_ENTRYPOINT + "/couple/login",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(postData),
-          }
+          "POST",
+          postData,
+          cookies.access_token
         );
-        const data = await response.json();
-        if (response.ok) {
-          if (groomName.trim() && brideName.trim()) {
-            updateState({
-              coupleData: { groom_name: groomName.trim(), bride_name: brideName.trim() },
-              currentScreen: 'couple-home',
-              userType: 'couple'
-            });
-          }
-        } else{
-          alert(data.message || "ログインに失敗しました");
-          throw new Error(data.message || "ログインに失敗しました");
+        if (data && data.couple && groomName.trim() && brideName.trim()) {
+          console.log("ログイン成功:", data);
+          updateState({
+            coupleData: { id: data.couple.id, groom_name: groomName.trim(), bride_name: brideName.trim() },
+            currentScreen: 'couple-home',
+            userType: 'couple'
+          });
         }
-        console.log(data.couple.id);
-        console.log(data.couple.groom_name);
-        console.log(data.couple.bride_name);
-        // console.log("取得したデータ:", data);
       } catch (error) {
         console.error("データの取得に失敗しました", error);
       }
   };
-
+  const handleLogOut = () => {
+    removeCookie("access_token");
+    removeCookie("id");
+    updateState({
+      currentScreen: 'sign-in',
+      userType: null,
+      coupleData: null,
+      selectedGuest: null,
+      message: { template_url: '', message_content: '' },
+    });
+  }
   return (
     <>
+    <button onClick={handleLogOut}>ログアウト</button>
     <div className="mt-5" />
     <div className="center-container">
     {/* <div className={styles.thank_you_logo}>
@@ -126,67 +126,6 @@ export function OnboardingScreen({ appState, updateState }: OnboardingScreenProp
         <span className={styles.next_text}>つぎへ→</span>
       </button>
     </div>
-    
-
-      {/* <div className="flex-1 px-6 py-8">
-        <div className="max-w-sm mx-auto space-y-8">
-
-          <div className="space-y-6">
-              <div className="relative">
-                <input
-                  type="text"
-                  value={groomName}
-                  onChange={(e) => setGroomName(e.target.value)}
-                  placeholder="フルネームで入力"
-                  className="name_input"
-                />
-              </div>
-            <div className="space-y-3">
-              <label className="block text-sm font-medium text-foreground">
-                新婦のお名前
-              </label>
-              <div className="relative">
-                <input
-                  type="text"
-                  value={brideName}
-                  onChange={(e) => setBrideName(e.target.value)}
-                  placeholder="フルネームで入力"
-                  className="w-full px-4 py-3 bg-input-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200"
-                />
-              </div>
-            </div>
-
-            <p className="text-xs text-muted-foreground text-center">
-              ※姓が変わっている場合は、旧姓を入力してください
-            </p>
-          </div>
-
-          <button
-            onClick={handleNext}
-            disabled={!groomName.trim() || !brideName.trim()}
-            className={`w-full py-3 px-6 rounded-lg font-medium flex items-center justify-center gap-2 transition-all duration-200 ${
-              groomName.trim() && brideName.trim()
-                ? 'bg-primary text-primary-foreground hover:shadow-card-hover transform hover:-translate-y-0.5'
-                : 'bg-muted text-muted-foreground cursor-not-allowed'
-            }`}
-          >
-            次へ
-            <ArrowRight className="w-4 h-4" />
-          </button>
-
-          <div className="text-center">
-            <button
-              onClick={() => updateState({ currentScreen: 'guest-flow', userType: 'guest' })}
-              className="text-primary font-medium hover:underline transition-colors duration-200"
-            >
-              ゲストとしてログイン
-            </button>
-          </div>
-        </div>
-      </div>
-      
-      <div className="h-[34px]" />
-    </div> */}
     </>
   );
 }

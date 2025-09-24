@@ -1,5 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { AppState, Guest } from '../App';
+import { useCookies } from 'react-cookie';
+import { callApi } from '../utils/api';
 import styles from './GuestList.module.css'
 
 interface GuestListProps {
@@ -10,48 +12,28 @@ interface GuestListProps {
 export function GuestList({ appState, updateState }: GuestListProps) {
     const [guests, setGuests] = useState<Guest[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
-    const [error, setError] = useState<string | null>(null);
     const [selectedType, setSelectedType] = useState('すべて');
     const [selectedCommunity, setSelectedCommunity] = useState('すべて'); 
+    const [cookies] = useCookies(["access_token"]);
 
     useEffect(() => {
       const fetchGuests = async () => {
         try {
-          // APIコールを開始する前にローディング状態をtrueに設定
           setLoading(true);
-          setError(null); // エラーをリセット
-
-          // バックエンドのAPIエンドポイント (couple_id=1のデータを取得)
-          const response = await fetch(`${process.env.REACT_APP_BACKEND_ENTRYPOINT}/guest/get/1`);
-
-          // レスポンスが成功したかチェック (HTTPステータスコード 200番台)
-          if (!response.ok) {
-            // エラーレスポンスの場合、エラーメッセージをスロー
-            throw new Error(`HTTP error! Status: ${response.status} - ${response.statusText}`);
-          }
-
-          // レスポンスボディをJSONとしてパース
-          const data = await response.json();
-          
-          console.log("got data:", data);
-          console.log("guests:", data.guests);
-          console.log('Fetched guests:', data.guests);
-
-          // data オブジェクトに 'guests' というキーが存在し、その値だけを格納したい場合
+          const data = await callApi(
+            `${process.env.REACT_APP_BACKEND_ENTRYPOINT}/guest/get/${appState.coupleData?.id}`,
+            'GET',
+            null,
+            cookies.access_token
+          );
           setGuests(data.guests);
-          // updateState({ guests: data.guests });
         } catch (e: any) {
-          // エラーが発生した場合、エラーメッセージをstateに格納
           console.error("Failed to fetch guests:", e);
-          setError(`データの取得に失敗しました: ${e.message}`);
         } finally {
-          // APIコールが完了したらローディング状態をfalseに設定 (成功/失敗に関わらず)
           setLoading(false);
         }
       };
-
       fetchGuests();
-
     }, []); 
 
     const communities = useMemo(() => {
@@ -59,7 +41,6 @@ export function GuestList({ appState, updateState }: GuestListProps) {
         return ['すべて', ...uniqueCommunities];
     }, [guests]);
 
-    // フィルターされたゲストリストの計算（useMemoで最適化）
     const filteredGuests = useMemo(() => {
         return guests.filter(guest => {
         const matchesType = selectedType === 'すべて' || guest.invited_by === selectedType;
@@ -68,11 +49,13 @@ export function GuestList({ appState, updateState }: GuestListProps) {
         });
     }, [guests, selectedType, selectedCommunity]); 
 
-    const editGuest = (guest: Guest) => {
+    const createCard = (guest: Guest) => {
       updateState({ currentScreen: 'message-setup', selectedGuest: guest });
     }
-    console.log(guests);
-    console.log(filteredGuests)
+
+    const editCard = (guest: Guest) => {
+      updateState({ currentScreen: 'message-setup', selectedGuest: guest });
+    }
 
     if (loading) {
       return (
@@ -129,13 +112,25 @@ export function GuestList({ appState, updateState }: GuestListProps) {
         {filteredGuests.length > 0 ? (
           <div>
             {filteredGuests.map(guest => (
-              <React.Fragment key={guest.id}>
+              <React.Fragment key={guest.guest_id}>
                 <div className='mt-3'/>
                 <div className={styles.guest_item}>
                   <span className={styles.guest_name}>{guest.guest_name}様</span>
                   <div className={styles.guest_edit_section}>
-                    <div className={styles.guest_edit_text} onClick={()=> editGuest(guest)}>編集する</div>
-                    <img className={styles.edit_img} onClick={()=> editGuest(guest)} src='images/edit.svg' alt='edit'/>
+                    {guest.has_message ? (
+                      <>
+                        <div className={styles.guest_edit_text} onClick={()=> editCard(guest)}>編集する</div>
+                        <img className={styles.edit_img} onClick={()=> editCard(guest)} src='images/edit.svg' alt='edit'/>
+                      </>
+                    ) : (
+                      <>
+                        <div className={styles.guest_edit_text} onClick={()=> createCard(guest)}>新規作成</div>
+                        <img className={styles.edit_img} onClick={()=> createCard(guest)} src='images/edit.svg' alt='edit'/>
+                      </>
+                    )}
+                    {guest.has_message ? 1 : 0}
+                    {guest.has_image ? 1 : 0}
+                    {guest.has_video ? 1 : 0}
                   </div>
                 </div>
               </React.Fragment>

@@ -1,46 +1,37 @@
-import { AppState, Guest } from '../App';
+import { AppState } from '../App';
 import styles from './MessageConfirm.module.css'
-
+import { useCookies } from 'react-cookie';
+import { callApi } from '../utils/api';
 interface MessageConfirmProps {
   appState: AppState;
   updateState: (updates: Partial<AppState>) => void;
 }
 
 export function MessageConfirm({ appState, updateState }: MessageConfirmProps) {
-  console.log(appState.message.message_content)
-    const handleComplete = async () => {
-      const postData = {
-        couple_id: 1, // 仮のカップルID
-        guest_id: appState.selectedGuest?.id,
-        template_url: appState.message.template_url,
-        message_content: appState.message.message_content
-      };
-      try {
-        const response = await fetch(`${process.env.REACT_APP_BACKEND_ENTRYPOINT}/card/register`, { // エンドポイントはバックエンドに合わせて調整
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            // 必要に応じて認証ヘッダーなどを追加
-            // 'Authorization': `Bearer ${yourAuthToken}`,
-          },
-          body: JSON.stringify(postData),
-        });
-        const data = await response.json();
-        if (response.ok){
-          alert(data.message || "メッセージカードが正常に登録されました。");
-          updateState({ 
-            currentScreen: 'guest-list', 
-          });    
-        }else{
-          alert(data.message || "メッセージカードの登録に失敗しました");
-          throw new Error(data.message || 'メッセージカードの登録に失敗しました');
-        }
-
-      } catch (error) {
-        console.error('メッセージカードの登録中にエラーが発生しました:', error);
-        throw error;
-      }      
+  const [cookies] = useCookies(["access_token"]);
+  const handleComplete = async () => {
+    const postData = {
+      couple_id: appState.coupleData?.id,
+      guest_id: appState.selectedGuest?.guest_id,
+      template_url: appState.message?.template_url,
+      message_content: appState.message?.message_content,
     };
+    try {
+      const data = await callApi(
+        `${process.env.REACT_APP_BACKEND_ENTRYPOINT}/card/register`,
+        'POST',
+        postData,
+        cookies.access_token
+      );
+      alert(data.message);
+      updateState({ 
+        currentScreen: 'guest-list', 
+      });    
+    } catch (error) {
+      console.error('メッセージカードの登録中にエラーが発生しました:', error);
+      throw error;
+    }      
+  };
   return (
     <>
     <button 
@@ -54,7 +45,7 @@ export function MessageConfirm({ appState, updateState }: MessageConfirmProps) {
         完成イメージ
       </label>
       <div className='mt-5'/>
-      <img className={styles.output_image} src={appState.message.template_url} alt='template'/>
+      <img className={styles.output_image} src={appState.message?.template_url} alt='template'/>
       <div className='mt-5'/>
       <button
           onClick={handleComplete}
@@ -63,7 +54,6 @@ export function MessageConfirm({ appState, updateState }: MessageConfirmProps) {
           <span className={styles.complete_text}>確認する→</span>
       </button>
     </div>
-    {/* {appState.message.content} */}
     </>
     );
 }

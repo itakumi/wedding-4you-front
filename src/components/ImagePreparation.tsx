@@ -1,5 +1,7 @@
-import { AppState, Guest } from '../App';
+import { AppState } from '../App';
 import styles from './ImagePreparation.module.css'
+import { useCookies } from 'react-cookie';
+import { callApi } from '../utils/api';
 
 interface ImagePreparationProps {
   appState: AppState;
@@ -7,13 +9,37 @@ interface ImagePreparationProps {
 }
 
 export function ImagePreparation({ appState, updateState }: ImagePreparationProps) {
+  const [cookies] = useCookies(["access_token"]);
 
-const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      // Here you can handle the uploaded video file
-      alert(`画像「${file.name}」をアップロードしました`);
-      // For example, you might want to store the file in the app state or upload it to a server
+      const reader = new FileReader();
+      reader.onloadend = async() => {
+        const arrayBuffer = reader.result as ArrayBuffer;
+        const postData = {
+          image_data: arrayBuffer,
+          image_type: file.type,
+          couple_id: appState.coupleData?.id,
+          guest_id: appState.selectedGuest?.guest_id,
+        }
+        try {
+          const data = await callApi(
+            process.env.REACT_APP_BACKEND_ENTRYPOINT + "/media/image/upload",
+            "POST",
+            postData,
+            cookies.access_token
+          );
+          alert("画像アップロード成功");
+          updateState({
+            currentScreen: 'guest-list'
+          });
+        } catch (error) {
+          alert((error as any)?.message || "画像のアップロードに失敗しました");
+          console.error("データの取得に失敗しました", error);
+        }
+      };
+      reader.readAsDataURL(file);
     }
   }
   return (

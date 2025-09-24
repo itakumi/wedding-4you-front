@@ -1,5 +1,5 @@
-import { use, useState } from 'react';
-import { AppState, Guest } from '../App';
+import { useState } from 'react';
+import { AppState } from '../App';
 import styles from './MessageInput.module.css'
 
 interface MessageInputProps {
@@ -10,7 +10,16 @@ interface MessageInputProps {
 export function MessageInput({ appState, updateState }: MessageInputProps) {
     const [message, setMessage] = useState('');
     const handleConfirm = () => {
-        updateState({ currentScreen: 'message-confirm', message: { ...appState.message, message_content: message } });
+        updateState({ 
+            currentScreen: 'message-confirm', 
+            message: { 
+                ...appState.message, 
+                message_content: message,
+                template_url: appState.message?.template_url ?? '',
+                image_url: appState.message?.image_url ?? '',
+                video_url: appState.message?.video_url ?? ''
+            } 
+        });
     };
   return (
     <>

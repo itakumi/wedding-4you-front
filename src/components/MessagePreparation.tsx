@@ -1,17 +1,11 @@
 import React from 'react';
-import { AppState, Guest } from '../App';
+import { AppState } from '../App';
 import styles from './MessagePreparation.module.css'
+import { separateButtons } from '../utils/utils';
 
 interface MessagePreparationProps {
   appState: AppState;
   updateState: (updates: Partial<AppState>) => void;
-}
-function separateButtons<T>(array: T[], size: number): T[][] {
-  const result: T[][] = [];
-  for (let i = 0; i < array.length; i += size) {
-    result.push(array.slice(i, i + size));
-  }
-  return result;
 }
 
 export function MessagePreparation({ appState, updateState }: MessagePreparationProps) {
