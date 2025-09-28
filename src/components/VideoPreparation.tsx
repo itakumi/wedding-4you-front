@@ -1,6 +1,7 @@
 import { AppState } from '../App';
 import styles from './VideoPreparation.module.css'
 import { callApi } from '../utils/api';
+import { useCookies } from 'react-cookie';
 
 interface VideoPreparationProps {
   appState: AppState;
@@ -8,7 +9,7 @@ interface VideoPreparationProps {
 }
 
 export function VideoPreparation({ appState, updateState }: VideoPreparationProps) {
-
+  const [cookies] = useCookies(["id"]);
   const handleVideoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
@@ -19,7 +20,7 @@ export function VideoPreparation({ appState, updateState }: VideoPreparationProp
           video_data: arrayBuffer,
           video_type: file.type,
           id: appState.selectedGuest?.id,
-          couple_id: appState.coupleData?.id,
+          couple_id: cookies["id"],
           guest_id: appState.selectedGuest?.guest_id,
         }
         try {

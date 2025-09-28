@@ -40,7 +40,7 @@ export function SignIn({ appState, updateState }: SignInProps) {
         setCookie("access_token", data.access_token);
         setCookie("id", data.id);
         updateState({
-          currentScreen: 'onboarding',
+          currentScreen: 'couple-home',
           userType: 'couple',
         });
       }
@@ -50,7 +50,8 @@ export function SignIn({ appState, updateState }: SignInProps) {
   };
   if ('access_token' in cookies) {
     updateState({
-      currentScreen: 'onboarding',
+      currentScreen: 'couple-home',
+      userType: 'couple',
     });
     return <></>;
   }

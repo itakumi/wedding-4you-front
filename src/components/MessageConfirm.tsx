@@ -8,10 +8,10 @@ interface MessageConfirmProps {
 }
 
 export function MessageConfirm({ appState, updateState }: MessageConfirmProps) {
-  const [cookies] = useCookies(["access_token"]);
+  const [cookies] = useCookies(["access_token", "id"]);
   const handleComplete = async () => {
     const postData = {
-      couple_id: appState.coupleData?.id,
+      couple_id: cookies["id"],
       guest_id: appState.selectedGuest?.guest_id,
       template_url: appState.message?.template_url,
       message_content: appState.message?.message_content,

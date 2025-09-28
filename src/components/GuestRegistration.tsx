@@ -27,6 +27,7 @@ export function GuestRegistration({ appState, updateState }: GuestRegistrationPr
         guests,
         cookies.access_token
       );
+      console.log(data);
     } catch (error) {
       console.error('ゲストデータのアップロード中にエラーが発生しました:', error);
       throw error;
@@ -53,7 +54,7 @@ export function GuestRegistration({ appState, updateState }: GuestRegistrationPr
 
           if (name && name.trim()) {
             guests.push({
-              couple_id: appState.coupleData?.id,
+              couple_id: cookies["id"],
               guest_name: name.trim(),
               invited_by: inviter?.trim().toLowerCase() === '新婦' ? '新婦' : '新郎',
               community: community?.trim() || '未設定', // communityがundefinedになる可能性を考慮
@@ -77,12 +78,13 @@ export function GuestRegistration({ appState, updateState }: GuestRegistrationPr
         }
       };
       reader.readAsText(file);
+      event.target.value = "";
     }
   };
 
   const handleManualAdd = async () => {
     const postGuest = {
-      couple_id: appState.coupleData?.id,
+      couple_id: cookies["id"],
       guest_name: 'げすと',
       invited_by: '新郎',
       community: '未設定'

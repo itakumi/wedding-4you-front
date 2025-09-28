@@ -16,7 +16,10 @@ import { ViewMessage } from './components/ViewMessage';
 import './App.css';
 
 //TODO:
-// APIコールを同じページで2回以上行うと、2回目以降が失敗することがある。
+// 自分のIDのレコードのみしかアクセスできないようにする
+// ユーザー登録完了してメールでのリンクの挙動を確認
+// リクエスト時間かかりすぎ問題
+
 
 export type UserType = 'couple' | 'guest';
 export type Screen = 'sign-in' | 'onboarding' | 'guest-login' | 'view-message' | 'name-conflict' | 'couple-home' | 'guest-registration' | 'guest-list' | 'message-setup' | 'message-preparation'| 'message-input' | 'message-confirm' | 'video-preparation' | 'image-preparation';

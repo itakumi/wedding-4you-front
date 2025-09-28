@@ -14,14 +14,14 @@ export function GuestList({ appState, updateState }: GuestListProps) {
     const [loading, setLoading] = useState<boolean>(true);
     const [selectedType, setSelectedType] = useState('すべて');
     const [selectedCommunity, setSelectedCommunity] = useState('すべて'); 
-    const [cookies] = useCookies(["access_token"]);
+    const [cookies] = useCookies(["access_token", "id"]);
 
     useEffect(() => {
       const fetchGuests = async () => {
         try {
           setLoading(true);
           const data = await callApi(
-            `${process.env.REACT_APP_BACKEND_ENTRYPOINT}/guest/get/${appState.coupleData?.id}`,
+            `${process.env.REACT_APP_BACKEND_ENTRYPOINT}/guest/get/${cookies["id"]}`,
             'GET',
             null,
             cookies.access_token

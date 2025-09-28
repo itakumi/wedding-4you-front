@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { AppState } from '../App';
 import styles from './CoupleHome.module.css';
 import '../index.css';
 import { separateButtons } from '../utils/utils';
+import { callApi } from '../utils/api';
+import { useCookies } from 'react-cookie';
 
 interface CoupleHomeProps {
   appState: AppState;
@@ -10,6 +12,8 @@ interface CoupleHomeProps {
 }
 
 export function CoupleHome({ appState, updateState }: CoupleHomeProps) {
+  const [cookies, setCookies, removeCookie] = useCookies(["access_token", "id", "groom_name", "bride_name"]);
+  const [loading, setLoading] = useState(true);
   const menuItems = [
     {
       title: 'ゲスト登録/変更',
@@ -32,13 +36,65 @@ export function CoupleHome({ appState, updateState }: CoupleHomeProps) {
       action: () => alert('使い方ガイドは準備中です'),
     }
   ];
+  useEffect(() => {
+    const fetchData = async () => {
+      const postData = {
+        id: cookies.id,
+      }
+      try {
+        const data = await callApi(
+          process.env.REACT_APP_BACKEND_ENTRYPOINT + "/couple/check",
+          "POST",
+          postData,
+          cookies.access_token
+        );
+        if (data.status === "success") {
+          console.log("ログイン成功:", data);
+          setCookies("groom_name", encodeURIComponent(data.couple.groom_name));
+          setCookies("bride_name", encodeURIComponent(data.couple.bride_name));
+          setLoading(false);
+        } else{
+          updateState({ currentScreen: 'onboarding' });
+        }
+      } catch (error) {
+        console.error("データの取得に失敗しました", error);
+        updateState({ currentScreen: 'sign-in' });
+      }
+    };
+    if (cookies.access_token && cookies.id && (!cookies.groom_name || !cookies.bride_name)) {
+      fetchData();
+    }else{
+      setLoading(false);
+    }
+  }, []);
+  const handleLogOut = () => {
+    removeCookie("access_token");
+    removeCookie("id");
+    removeCookie("groom_name");
+    removeCookie("bride_name");
+    updateState({
+      currentScreen: 'sign-in',
+      userType: null,
+      coupleData: null,
+      selectedGuest: null,
+      message: { template_url: '', message_content: '' },
+    });
+  }
+
   return (
     <>
-    <div className="center-container">
-      <div className="mt-5" />
-      <label className={styles.prepare_text_label}>準備を進めましょう</label>
-      <div className="mt-5" />
-      <div className={styles.menu_items_area}>
+    <button onClick={handleLogOut}>ログアウト</button>
+    {/* <button onClick={() => updateState({ currentScreen: 'onboarding' })}>カップル名変更</button> */}
+    {loading ? (
+      <div className="center-container">
+        <p className={styles.loading_text}>情報を取得しています...</p>
+      </div>
+    ) : (
+      <div className="center-container">
+        <div className="mt-5" />
+        <label className={styles.prepare_text_label}>準備を進めましょう</label>
+        <div className="mt-5" />
+        <div className={styles.menu_items_area}>
         {separateButtons(menuItems, 2).map((pair, idx) => (
           <div className={styles.menu_items_row} key={idx} >
             {pair.map((item, index) => (
@@ -55,6 +111,7 @@ export function CoupleHome({ appState, updateState }: CoupleHomeProps) {
       </div>      
       <p className={styles.inquiry_text}>お問い合わせ先：4youcard.official@gmail.com</p>
     </div>
+    )}
     </>
   );
 }

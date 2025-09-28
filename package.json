@@ -1,5 +1,6 @@
 {
   "name": "wedding-4you-front",
+  "homepage": "https://itakumi.github.io/wedding-4you-front",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -9,6 +10,7 @@
     "@testing-library/user-event": "^13.5.0",
     "@types/jest": "^27.5.2",
     "@types/node": "^16.18.126",
+    "gh-pages": "^6.3.0",
     "react": "^19.1.1",
     "react-cookie": "^8.0.1",
     "react-dom": "^19.1.1",
@@ -22,7 +24,9 @@
     "dev": "WATCHPACK_POLLING=true react-scripts dev",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "format": "eslint src --fix && prettier --write src"
+    "format": "eslint src --fix && prettier --write src",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"    
   },
   "eslintConfig": {
     "extends": [

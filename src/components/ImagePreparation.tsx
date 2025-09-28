@@ -9,7 +9,7 @@ interface ImagePreparationProps {
 }
 
 export function ImagePreparation({ appState, updateState }: ImagePreparationProps) {
-  const [cookies] = useCookies(["access_token"]);
+  const [cookies] = useCookies(["access_token", "id"]);
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -20,7 +20,7 @@ export function ImagePreparation({ appState, updateState }: ImagePreparationProp
         const postData = {
           image_data: arrayBuffer,
           image_type: file.type,
-          couple_id: appState.coupleData?.id,
+          couple_id: cookies["id"],
           guest_id: appState.selectedGuest?.guest_id,
         }
         try {

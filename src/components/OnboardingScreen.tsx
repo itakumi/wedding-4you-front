@@ -13,7 +13,7 @@ export function OnboardingScreen({ appState, updateState }: OnboardingScreenProp
   const [groomName, setGroomName] = useState('');
   const [brideName, setBrideName] = useState('');
   const isComposing = useRef(false);
-  const [cookies,, removeCookie] = useCookies(["access_token", "id"]);
+  const [cookies,, removeCookie] = useCookies(["access_token", "id", "groom_name", "bride_name"]);
 
   const handleGroomNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (isComposing.current) {
@@ -40,30 +40,33 @@ export function OnboardingScreen({ appState, updateState }: OnboardingScreenProp
       id: cookies.id,
       groom_name: groomName.trim(),
       bride_name: brideName.trim(),
-      password: "password"
     }
-      try {
-        const data = await callApi(
-          process.env.REACT_APP_BACKEND_ENTRYPOINT + "/couple/login",
-          "POST",
-          postData,
-          cookies.access_token
-        );
-        if (data && data.couple && groomName.trim() && brideName.trim()) {
-          console.log("ログイン成功:", data);
-          updateState({
-            coupleData: { id: data.couple.id, groom_name: groomName.trim(), bride_name: brideName.trim() },
-            currentScreen: 'couple-home',
-            userType: 'couple'
-          });
-        }
-      } catch (error) {
-        console.error("データの取得に失敗しました", error);
+    try {
+      const data = await callApi(
+        process.env.REACT_APP_BACKEND_ENTRYPOINT + "/couple/register",
+        "POST",
+        postData,
+        cookies.access_token
+      );
+      if (data.status === "success") {
+        alert(data.message);
+        updateState({
+          coupleData: { id: data.couple.id, groom_name: groomName.trim(), bride_name: brideName.trim() },
+          currentScreen: 'couple-home',
+          userType: 'couple'
+        });
+      }else{
+        alert(data.message);
       }
+    } catch (error) {
+      console.error("データの取得に失敗しました", error);
+    }
   };
   const handleLogOut = () => {
     removeCookie("access_token");
     removeCookie("id");
+    removeCookie("groom_name");
+    removeCookie("bride_name");
     updateState({
       currentScreen: 'sign-in',
       userType: null,
