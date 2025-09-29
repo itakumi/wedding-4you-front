@@ -45,7 +45,13 @@ export function GuestLogin({ appState, updateState }: GuestLoginProps) {
           "POST",
           postData
         );
-        if (data.status === 'multiple_found'){
+        if (data.status === 'success'){
+          updateState({
+            currentScreen: 'view-message',
+            userType: 'guest',
+            message: data.card,
+          });
+        }else if (data.status === 'multiple_found'){
           updateState({
             currentScreen: 'name-conflict',
             guestLoginInfo: {
@@ -55,15 +61,11 @@ export function GuestLogin({ appState, updateState }: GuestLoginProps) {
           });
           return;
         } else if (data.status === 'not_found') {
-          alert(data.message || "招待者名、またはゲスト名が一致しません");
+          alert(data.message);
           return;
         } else {
-          console.log("ログイン成功:", data);
-          updateState({
-            currentScreen: 'view-message',
-            userType: 'guest',
-            message: data.card,
-          });
+          alert("招待者名、またはゲスト名が一致しません");
+          console.error(data.message);
         }
       } catch (error: any) {
         alert(error?.message || "招待者名、またはゲスト名が一致しません");

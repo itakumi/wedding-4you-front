@@ -18,7 +18,10 @@ import './App.css';
 //TODO:
 // 自分のIDのレコードのみしかアクセスできないようにする
 // ユーザー登録完了してメールでのリンクの挙動を確認
-// リクエスト時間かかりすぎ問題
+// iconとタイトル
+// useEffectで2回リクエスト送られてる
+// csvのvalidationで失敗した場合は、原因詳細をユーザーに伝える
+// template.pngが反映されていない
 
 
 export type UserType = 'couple' | 'guest';

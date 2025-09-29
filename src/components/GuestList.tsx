@@ -14,7 +14,7 @@ export function GuestList({ appState, updateState }: GuestListProps) {
     const [loading, setLoading] = useState<boolean>(true);
     const [selectedType, setSelectedType] = useState('すべて');
     const [selectedCommunity, setSelectedCommunity] = useState('すべて'); 
-    const [cookies] = useCookies(["access_token", "id"]);
+    const [cookies, setCookie, removeCookie] = useCookies(["access_token", "id", "groom_name", "bride_name"]);
 
     useEffect(() => {
       const fetchGuests = async () => {
@@ -26,7 +26,20 @@ export function GuestList({ appState, updateState }: GuestListProps) {
             null,
             cookies.access_token
           );
-          setGuests(data.guests);
+          if (data.status === 'success' || data.status === 'not_found') {
+            setGuests(data.guests);
+          } else{
+            alert("不正なアクセスです。再度ログインしてください。");
+            const handleLogOut = () => {
+              removeCookie("access_token");
+              removeCookie("id");
+              removeCookie("groom_name");
+              removeCookie("bride_name");
+              updateState({ currentScreen: 'sign-in', userType: null, coupleData: null, message: null, selectedGuest: null });
+            }
+            handleLogOut();
+            return;
+          }
         } catch (e: any) {
           console.error("Failed to fetch guests:", e);
         } finally {

@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import { AppState } from '../App';
 import styles from './MessageConfirm.module.css'
 import { useCookies } from 'react-cookie';
@@ -8,7 +9,8 @@ interface MessageConfirmProps {
 }
 
 export function MessageConfirm({ appState, updateState }: MessageConfirmProps) {
-  const [cookies] = useCookies(["access_token", "id"]);
+  const [cookies, setCookie, removeCookie] = useCookies(["access_token", "id", "groom_name", "bride_name"]);
+  const [loading, setLoading] = useState(false);
   const handleComplete = async () => {
     const postData = {
       couple_id: cookies["id"],
@@ -16,6 +18,7 @@ export function MessageConfirm({ appState, updateState }: MessageConfirmProps) {
       template_url: appState.message?.template_url,
       message_content: appState.message?.message_content,
     };
+    setLoading(true);
     try {
       const data = await callApi(
         `${process.env.REACT_APP_BACKEND_ENTRYPOINT}/card/register`,
@@ -23,14 +26,31 @@ export function MessageConfirm({ appState, updateState }: MessageConfirmProps) {
         postData,
         cookies.access_token
       );
-      alert(data.message);
-      updateState({ 
-        currentScreen: 'guest-list', 
-      });    
+      if (data.status === 'success'){
+        alert(data.message);
+        updateState({ 
+          currentScreen: 'guest-list', 
+        });    
+      }else if (data.status === 'error' && data.message === 'access_tokenが必要です。'){
+        alert("不正なアクセスです。再度ログインしてください。");
+        const handleLogOut = () => {
+          removeCookie("access_token");
+          removeCookie("id");
+          removeCookie("groom_name");
+          removeCookie("bride_name");
+          updateState({ currentScreen: 'sign-in', userType: null, coupleData: null, message: null, selectedGuest: null });
+        }
+        handleLogOut();
+        return;        
+      }else{
+        alert("エラーが発生しました。もう一度お試しください");
+        console.error(data.message);
+      }
     } catch (error) {
       console.error('メッセージカードの登録中にエラーが発生しました:', error);
       throw error;
-    }      
+    }
+    setLoading(false);
   };
   return (
     <>
@@ -53,6 +73,7 @@ export function MessageConfirm({ appState, updateState }: MessageConfirmProps) {
         >
           <span className={styles.complete_text}>確認する→</span>
       </button>
+      {loading &&<p>メッセージを登録中...</p>}
     </div>
     </>
     );

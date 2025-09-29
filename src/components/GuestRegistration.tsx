@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { AppState } from '../App';
 import styles from './GuestRegistration.module.css'
 import { useCookies } from 'react-cookie';
@@ -17,7 +17,8 @@ interface GuestPostData {
 }
 
 export function GuestRegistration({ appState, updateState }: GuestRegistrationProps) {
-  const [cookies] = useCookies(["access_token", "id"]);
+  const [cookies, setCookie, removeCookie] = useCookies(["access_token", "id", "groom_name", "bride_name"]);
+  const [loading, setLoading] = useState(false);
 
   const uploadGuestsBatch = async (guests: GuestPostData[]): Promise<void> => {
     try {
@@ -27,8 +28,18 @@ export function GuestRegistration({ appState, updateState }: GuestRegistrationPr
         guests,
         cookies.access_token
       );
+      if (data.status === 'success') {
+        alert(data.message);
+      } else if (data.status === 'partial_success') {
+        alert(data.message);
+        console.log('部分的に失敗したゲストデータ:', data.failed_guests_details);
+      } else if (data.status === 'error') {
+        alert(data.message);
+        console.log('失敗したゲストデータ:', data.failed_guests_details);
+      }
       console.log(data);
     } catch (error) {
+      alert('ゲストの追加中にエラーが発生しました。再度お試しください');
       console.error('ゲストデータのアップロード中にエラーが発生しました:', error);
       throw error;
     }
@@ -36,11 +47,11 @@ export function GuestRegistration({ appState, updateState }: GuestRegistrationPr
 
   const handleCSVUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-
     if (file) {
       const reader = new FileReader();
 
       reader.onload = async (e) => {
+        setLoading(true);
         const csv = e.target?.result as string;
         const lines = csv.split('\n');
         const guests: GuestPostData[] = [];
@@ -63,19 +74,11 @@ export function GuestRegistration({ appState, updateState }: GuestRegistrationPr
         });
 
         if (guests.length > 0) {
-          try {
-            await uploadGuestsBatch(guests);
-            alert(`${guests.length}名のゲストを追加しました`);
-          } catch (error) {
-            alert(`ゲストの追加中にエラーが発生しました: ${
-              typeof error === 'object' && error !== null && 'message' in error
-                ? (error as { message: string }).message
-                : String(error)
-            }`);
-          }
+          await uploadGuestsBatch(guests);
         } else {
           alert('有効なゲストデータが見つかりませんでした。');
         }
+        setLoading(false);
       };
       reader.readAsText(file);
       event.target.value = "";
@@ -89,6 +92,7 @@ export function GuestRegistration({ appState, updateState }: GuestRegistrationPr
       invited_by: '新郎',
       community: '未設定'
     };    
+    setLoading(true);
     try {
       const data = await callApi(
         `${process.env.REACT_APP_BACKEND_ENTRYPOINT}/guest/register`,
@@ -96,11 +100,27 @@ export function GuestRegistration({ appState, updateState }: GuestRegistrationPr
         postGuest,
         cookies.access_token
       );
-      alert(data.message);
+      if (data.status === 'success') {
+        alert(data.message);
+      } else if (data.status === 'error' && data.message === "access_tokenが必要です。") {
+        alert("不正なアクセスです。再度ログインしてください。");
+        const handleLogOut = () => {
+          removeCookie("access_token");
+          removeCookie("id");
+          removeCookie("groom_name");
+          removeCookie("bride_name");
+          updateState({ currentScreen: 'sign-in', userType: null, coupleData: null, message: null, selectedGuest: null });
+        }
+        handleLogOut();
+        return;
+      }else{
+        alert(data.message);
+      }
     } catch (error) {
       console.error('ゲストデータのアップロード中にエラーが発生しました:', error);
       throw error;
     }
+    setLoading(false);
   };
   return (
     <>
@@ -133,6 +153,7 @@ export function GuestRegistration({ appState, updateState }: GuestRegistrationPr
         >
           <span className={styles.register_option_text}>手動で入力する→</span>
         </button>
+    {loading && <p>アップロード中...</p>}
     </div>
     </> 
   );

@@ -36,15 +36,18 @@ export function SignIn({ appState, updateState }: SignInProps) {
         postData,
         cookies.access_token
       );
-      if (data && data.access_token && data.id) {
+      if (data.status === 'success') {
         setCookie("access_token", data.access_token);
         setCookie("id", data.id);
         updateState({
           currentScreen: 'couple-home',
           userType: 'couple',
         });
+      } else {
+        alert(data.message);
       }
     } catch (error) {
+      alert("ログインに失敗しました。時間をおいて再度お試しください");
       console.error("ログインに失敗しました", error);
     }
   };

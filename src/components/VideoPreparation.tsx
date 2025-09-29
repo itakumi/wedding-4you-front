@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import { AppState } from '../App';
 import styles from './VideoPreparation.module.css'
 import { callApi } from '../utils/api';
@@ -9,7 +10,9 @@ interface VideoPreparationProps {
 }
 
 export function VideoPreparation({ appState, updateState }: VideoPreparationProps) {
-  const [cookies] = useCookies(["id"]);
+  const [cookies, setCookie, removeCookie] = useCookies(["access_token", "id", "groom_name", "bride_name"]);
+  const [loading, setLoading] = useState(false);
+
   const handleVideoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
@@ -23,22 +26,43 @@ export function VideoPreparation({ appState, updateState }: VideoPreparationProp
           couple_id: cookies["id"],
           guest_id: appState.selectedGuest?.guest_id,
         }
+        setLoading(true);
         try {
           const data = await callApi(
             process.env.REACT_APP_BACKEND_ENTRYPOINT + "/media/video/upload",
             "POST",
             postData
           );
-          alert("動画アップロード成功");
-          updateState({
-            currentScreen: 'guest-list'
-          });
+          if (data.status === 'success'){
+            alert(data.message);
+            updateState({
+              currentScreen: 'guest-list'
+            });
+          } else if (data.status === 'error' && data.message === 'access_tokenが必要です。'){
+            alert("不正なアクセスです。再度ログインしてください。");
+            const handleLogOut = () => {
+              removeCookie("access_token");
+              removeCookie("id");
+              removeCookie("groom_name");
+              removeCookie("bride_name");
+              updateState({ currentScreen: 'sign-in', userType: null, coupleData: null, message: null, selectedGuest: null });
+            }
+            handleLogOut();
+            return;        
+          }else if (data.status === 'exceed_max_payload'){
+            alert(data.message);
+          }else{
+            alert("エラーが発生しました。もう一度お試しください");
+            console.error(data.message);
+          }
         } catch (error) {
-          alert((error as any)?.message || "動画のアップロードに失敗しました");
-          console.error("データの取得に失敗しました", error);
+          alert("エラーが発生しました。もう一度お試しください");
+          console.error(error);
         }
+        setLoading(false);
       };
       reader.readAsDataURL(file);
+      event.target.value = "";
     }
   }
   return (
@@ -48,6 +72,7 @@ export function VideoPreparation({ appState, updateState }: VideoPreparationProp
     >
       戻る
     </button>
+    {loading && <p>動画をアップロード中...</p>}
     <div className='center-container'>
       <div className='mt-5'/>
       <label className={styles.title_text}>

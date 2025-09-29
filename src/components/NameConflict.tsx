@@ -25,19 +25,22 @@ export function NameConflict({ appState, updateState }: NameConflictProps) {
           "POST",
           postData
         );
-        if (data.status === 'not_found') {
-          alert("シリアルコードが一致しません");
-          return;
-        } else if (data.status === 'multiple_found') {
-          alert("同じシリアルコードの方が複数います。運営にお問い合わせください");
-          return;
-        } else {
+        if (data.status === 'success'){
           console.log("ログイン成功:", data);
           updateState({
             currentScreen: 'view-message',
             userType: 'guest',
             message: data.card,
           });
+        } else if (data.status === 'not_found') {
+          alert("シリアルコードが一致しません");
+          return;
+        } else if (data.status === 'multiple_found') {
+          alert("同じシリアルコードの方が複数います。運営にお問い合わせください");
+          return;
+        } else {
+          alert("エラーが発生しました。もう一度お試しください");
+          console.error("ログインエラー:", data.message);
         }
       } catch (error) {
         console.error("エラーが発生しました:", error);

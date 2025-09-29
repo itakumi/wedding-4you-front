@@ -48,15 +48,13 @@ export function OnboardingScreen({ appState, updateState }: OnboardingScreenProp
         postData,
         cookies.access_token
       );
+      alert(data.message);
       if (data.status === "success") {
-        alert(data.message);
         updateState({
           coupleData: { id: data.couple.id, groom_name: groomName.trim(), bride_name: brideName.trim() },
           currentScreen: 'couple-home',
           userType: 'couple'
         });
-      }else{
-        alert(data.message);
       }
     } catch (error) {
       console.error("データの取得に失敗しました", error);

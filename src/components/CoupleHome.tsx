@@ -12,7 +12,7 @@ interface CoupleHomeProps {
 }
 
 export function CoupleHome({ appState, updateState }: CoupleHomeProps) {
-  const [cookies, setCookies, removeCookie] = useCookies(["access_token", "id", "groom_name", "bride_name"]);
+  const [cookies, setCookie, removeCookie] = useCookies(["access_token", "id", "groom_name", "bride_name"]);
   const [loading, setLoading] = useState(true);
   const menuItems = [
     {
@@ -49,16 +49,29 @@ export function CoupleHome({ appState, updateState }: CoupleHomeProps) {
           cookies.access_token
         );
         if (data.status === "success") {
-          console.log("ログイン成功:", data);
-          setCookies("groom_name", encodeURIComponent(data.couple.groom_name));
-          setCookies("bride_name", encodeURIComponent(data.couple.bride_name));
+          setCookie("groom_name", encodeURIComponent(data.couple.groom_name));
+          setCookie("bride_name", encodeURIComponent(data.couple.bride_name));
           setLoading(false);
         } else{
-          updateState({ currentScreen: 'onboarding' });
+          alert("不正なアクセスです。再度ログインしてください。");
+          const handleLogOut = () => {
+            removeCookie("access_token");
+            removeCookie("id");
+            removeCookie("groom_name");
+            removeCookie("bride_name");
+            updateState({
+              currentScreen: 'sign-in',
+              userType: null,
+              coupleData: null,
+              selectedGuest: null,
+              message: { template_url: '', message_content: '' },
+            });
+          }
+          handleLogOut();
         }
       } catch (error) {
         console.error("データの取得に失敗しました", error);
-        updateState({ currentScreen: 'sign-in' });
+        updateState({ currentScreen: 'onboarding' });
       }
     };
     if (cookies.access_token && cookies.id && (!cookies.groom_name || !cookies.bride_name)) {
