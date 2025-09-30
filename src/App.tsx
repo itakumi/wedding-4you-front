@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { OnboardingScreen } from './components/OnboardingScreen';
 import { CoupleHome } from './components/CoupleHome';
 import { GuestRegistration } from './components/GuestRegistration';
@@ -19,10 +19,8 @@ import './App.css';
 // 自分のIDのレコードのみしかアクセスできないようにする
 // ユーザー登録完了してメールでのリンクの挙動を確認
 // iconとタイトル
-// useEffectで2回リクエスト送られてる
 // csvのvalidationで失敗した場合は、原因詳細をユーザーに伝える
 // template.pngが反映されていない
-
 
 export type UserType = 'couple' | 'guest';
 export type Screen = 'sign-in' | 'onboarding' | 'guest-login' | 'view-message' | 'name-conflict' | 'couple-home' | 'guest-registration' | 'guest-list' | 'message-setup' | 'message-preparation'| 'message-input' | 'message-confirm' | 'video-preparation' | 'image-preparation';
@@ -83,6 +81,18 @@ function App() {
   const updateState = (updates: Partial<AppState>) => {
     setAppState(prev => ({ ...prev, ...updates }));
   };
+
+  const blockBrowserBack = useCallback(() => {
+    alert("ブラウザの戻るボタンは使用できません。アプリ内のナビゲーションを使用してください。");
+  }, [])
+
+  useEffect(() => {
+      window.history.pushState(null, '', window.location.href)
+      window.addEventListener('popstate', blockBrowserBack)
+      return () => {
+          window.removeEventListener('popstate', blockBrowserBack)
+      }
+  }, [blockBrowserBack])
 
   const renderCurrentScreen = () => {
     switch (appState.currentScreen) {
