@@ -23,7 +23,7 @@ export function SignIn({ appState, updateState }: SignInProps) {
         setCookie("access_token", accessToken);
       }
     }
-  }, []);
+  }, [setCookie]);
 
   const handleNext = async () => {
     const postData = {
@@ -42,7 +42,6 @@ export function SignIn({ appState, updateState }: SignInProps) {
         setCookie("id", data.id);
         updateState({
           currentScreen: 'couple-home',
-          userType: 'couple',
         });
       } else {
         alert(data.message);
@@ -56,7 +55,6 @@ export function SignIn({ appState, updateState }: SignInProps) {
   if ('access_token' in cookies) {
     updateState({
       currentScreen: 'couple-home',
-      userType: 'couple',
     });
     return <></>;
   }
@@ -108,7 +106,7 @@ export function SignIn({ appState, updateState }: SignInProps) {
     </div>
     <div className="mt-5" />
     <button
-      onClick={() => updateState({ currentScreen: 'guest-login', userType: 'guest' })}
+      onClick={() => updateState({ currentScreen: 'guest-login' })}
       >
       <span>ゲストの方はこちら→</span>
     </button>

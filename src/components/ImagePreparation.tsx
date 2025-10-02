@@ -10,7 +10,7 @@ interface ImagePreparationProps {
 }
 
 export function ImagePreparation({ appState, updateState }: ImagePreparationProps) {
-  const [cookies, setCookie, removeCookie] = useCookies(["access_token", "id", "groom_name", "bride_name"]);
+  const [cookies,, removeCookie] = useCookies(["access_token", "id", "groom_name", "bride_name"]);
   const [loading, setLoading] = useState(false);
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -22,7 +22,7 @@ export function ImagePreparation({ appState, updateState }: ImagePreparationProp
         const postData = {
           image_data: arrayBuffer,
           image_type: file.type,
-          couple_id: cookies["id"],
+          couple_id: cookies.id,
           guest_id: appState.selectedGuest?.guest_id,
         }
         setLoading(true);
@@ -45,7 +45,7 @@ export function ImagePreparation({ appState, updateState }: ImagePreparationProp
               removeCookie("id");
               removeCookie("groom_name");
               removeCookie("bride_name");
-              updateState({ currentScreen: 'sign-in', userType: null, coupleData: null, message: null, selectedGuest: null });
+              updateState({ currentScreen: 'sign-in', message: null, selectedGuest: null });
             }
             handleLogOut();
             return;        

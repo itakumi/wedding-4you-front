@@ -22,16 +22,8 @@ import './App.css';
 // csvのvalidationで失敗した場合は、原因詳細をユーザーに伝える
 // template.pngが反映されていない
 // guestテーブルに重複しているかのfieldを追加して、同姓同名の人がいる場合はtrueにする
-// warningをなくす
 
-export type UserType = 'couple' | 'guest';
 export type Screen = 'sign-in' | 'onboarding' | 'guest-login' | 'view-message' | 'name-conflict' | 'couple-home' | 'guest-registration' | 'guest-list' | 'message-setup' | 'message-preparation'| 'message-input' | 'message-confirm' | 'video-preparation' | 'image-preparation';
-
-export interface CoupleData {
-  id: number;
-  groom_name: string;
-  bride_name: string;
-}
 
 export interface Guest {
   id: number;
@@ -60,8 +52,6 @@ export interface GuestLoginInfo {
 
 export interface AppState {
   currentScreen: Screen;
-  userType: UserType | null;
-  coupleData: CoupleData | null;
   selectedGuest?: Guest | null;
   message: Card | null;
   guestLoginInfo?: GuestLoginInfo | null;
@@ -70,9 +60,7 @@ export interface AppState {
 function App() {
   const [appState, setAppState] = useState<AppState>({
     currentScreen: 'sign-in',
-    userType: null,
     message: null,
-    coupleData: null,
     selectedGuest: null,
     guestLoginInfo: {
       inviter_name: '',
