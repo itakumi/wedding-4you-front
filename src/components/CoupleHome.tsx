@@ -52,7 +52,9 @@ export function CoupleHome({ appState, updateState }: CoupleHomeProps) {
           setCookie("groom_name", encodeURIComponent(data.couple.groom_name));
           setCookie("bride_name", encodeURIComponent(data.couple.bride_name));
           setLoading(false);
-        } else{
+        } else if (data.status === "not_found") {
+          updateState({ currentScreen: 'onboarding' });
+        } else {
           alert("不正なアクセスです。再度ログインしてください。");
           const handleLogOut = () => {
             removeCookie("access_token");

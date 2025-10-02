@@ -17,7 +17,7 @@ export function OnboardingScreen({ appState, updateState }: OnboardingScreenProp
 
   const handleGroomNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (isComposing.current) {
-      setGroomName(e.target.value); // 変換中はそのまま
+      setGroomName(e.target.value);
       return;
     }
     const inputValue = e.target.value;
@@ -27,7 +27,7 @@ export function OnboardingScreen({ appState, updateState }: OnboardingScreenProp
 
   const handleBrideNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (isComposing.current) {
-      setBrideName(e.target.value); // 変換中はそのまま
+      setBrideName(e.target.value);
       return;
     }
     const inputValue = e.target.value;
@@ -81,6 +81,8 @@ export function OnboardingScreen({ appState, updateState }: OnboardingScreenProp
     {/* <div className={styles.thank_you_logo}>
       Thank you
     </div> */}
+      <p>はじめにお二人のお名前を教えてください</p>
+      <p>お名前は一度設定すると変更できません</p>
       <label className={styles.name_label}>
         新郎のお名前
       </label>
