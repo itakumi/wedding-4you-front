@@ -68,7 +68,7 @@ export function GuestRegistration({ appState, updateState }: GuestRegistrationPr
               couple_id: cookies["id"],
               guest_name: name.trim(),
               invited_by: inviter?.trim().toLowerCase() === '新婦' ? '新婦' : '新郎',
-              community: community?.trim() || '未設定', // communityがundefinedになる可能性を考慮
+              community: community?.trim() || '未設定',
             });
           }
         });

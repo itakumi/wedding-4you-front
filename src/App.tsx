@@ -21,6 +21,8 @@ import './App.css';
 // iconとタイトル
 // csvのvalidationで失敗した場合は、原因詳細をユーザーに伝える
 // template.pngが反映されていない
+// guestテーブルに重複しているかのfieldを追加して、同姓同名の人がいる場合はtrueにする
+// warningをなくす
 
 export type UserType = 'couple' | 'guest';
 export type Screen = 'sign-in' | 'onboarding' | 'guest-login' | 'view-message' | 'name-conflict' | 'couple-home' | 'guest-registration' | 'guest-list' | 'message-setup' | 'message-preparation'| 'message-input' | 'message-confirm' | 'video-preparation' | 'image-preparation';
