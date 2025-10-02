@@ -12,6 +12,7 @@ interface SignInProps {
 export function SignIn({ appState, updateState }: SignInProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isLoginError, setIsLoginError] = useState(false);
   const [cookies, setCookie] = useCookies(["access_token", "id"]);
 
   useEffect(() => {
@@ -45,6 +46,7 @@ export function SignIn({ appState, updateState }: SignInProps) {
         });
       } else {
         alert(data.message);
+        setIsLoginError(true);
       }
     } catch (error) {
       alert("ログインに失敗しました。時間をおいて再度お試しください");
@@ -65,6 +67,11 @@ export function SignIn({ appState, updateState }: SignInProps) {
     {/* <div className={styles.thank_you_logo}>
       Thank you
     </div> */}
+    {isLoginError && (
+      <div style={{ color: 'red', marginBottom: '10px' }}>
+        ログインに失敗しました。メールアドレスとパスワードをご確認ください。
+      </div>
+    )}
       <label className={styles.name_label}>
         メールアドレス
       </label>
