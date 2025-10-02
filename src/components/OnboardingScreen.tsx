@@ -51,9 +51,7 @@ export function OnboardingScreen({ appState, updateState }: OnboardingScreenProp
       alert(data.message);
       if (data.status === "success") {
         updateState({
-          coupleData: { id: data.couple.id, groom_name: groomName.trim(), bride_name: brideName.trim() },
           currentScreen: 'couple-home',
-          userType: 'couple'
         });
       }
     } catch (error) {
@@ -67,8 +65,6 @@ export function OnboardingScreen({ appState, updateState }: OnboardingScreenProp
     removeCookie("bride_name");
     updateState({
       currentScreen: 'sign-in',
-      userType: null,
-      coupleData: null,
       selectedGuest: null,
       message: { template_url: '', message_content: '' },
     });

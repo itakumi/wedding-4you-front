@@ -63,8 +63,6 @@ export function CoupleHome({ appState, updateState }: CoupleHomeProps) {
             removeCookie("bride_name");
             updateState({
               currentScreen: 'sign-in',
-              userType: null,
-              coupleData: null,
               selectedGuest: null,
               message: { template_url: '', message_content: '' },
             });
@@ -78,10 +76,11 @@ export function CoupleHome({ appState, updateState }: CoupleHomeProps) {
     };
     if (cookies.access_token && cookies.id && (!cookies.groom_name || !cookies.bride_name)) {
       fetchData();
-    }else{
+    } else {
       setLoading(false);
     }
-  }, []);
+  }, [cookies.access_token, cookies.id, cookies.groom_name, cookies.bride_name, setCookie, removeCookie, updateState]);
+
   const handleLogOut = () => {
     removeCookie("access_token");
     removeCookie("id");
@@ -89,8 +88,6 @@ export function CoupleHome({ appState, updateState }: CoupleHomeProps) {
     removeCookie("bride_name");
     updateState({
       currentScreen: 'sign-in',
-      userType: null,
-      coupleData: null,
       selectedGuest: null,
       message: { template_url: '', message_content: '' },
     });

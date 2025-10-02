@@ -10,7 +10,7 @@ interface VideoPreparationProps {
 }
 
 export function VideoPreparation({ appState, updateState }: VideoPreparationProps) {
-  const [cookies, setCookie, removeCookie] = useCookies(["access_token", "id", "groom_name", "bride_name"]);
+  const [cookies,, removeCookie] = useCookies(["access_token", "id", "groom_name", "bride_name"]);
   const [loading, setLoading] = useState(false);
 
   const handleVideoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -23,7 +23,7 @@ export function VideoPreparation({ appState, updateState }: VideoPreparationProp
           video_data: arrayBuffer,
           video_type: file.type,
           id: appState.selectedGuest?.id,
-          couple_id: cookies["id"],
+          couple_id: cookies.id,
           guest_id: appState.selectedGuest?.guest_id,
         }
         setLoading(true);
@@ -45,7 +45,7 @@ export function VideoPreparation({ appState, updateState }: VideoPreparationProp
               removeCookie("id");
               removeCookie("groom_name");
               removeCookie("bride_name");
-              updateState({ currentScreen: 'sign-in', userType: null, coupleData: null, message: null, selectedGuest: null });
+              updateState({ currentScreen: 'sign-in', message: null, selectedGuest: null });
             }
             handleLogOut();
             return;        

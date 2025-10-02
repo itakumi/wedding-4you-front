@@ -48,7 +48,6 @@ export function GuestLogin({ appState, updateState }: GuestLoginProps) {
         if (data.status === 'success'){
           updateState({
             currentScreen: 'view-message',
-            userType: 'guest',
             message: data.card,
           });
         }else if (data.status === 'multiple_found'){
@@ -126,6 +125,12 @@ export function GuestLogin({ appState, updateState }: GuestLoginProps) {
         <span className={styles.next_text}>つぎへ→</span>
       </button>
     </div>
+    <div className="mt-5" />
+    <button
+      onClick={() => updateState({ currentScreen: 'sign-in' })}
+      >
+      <span>新郎新婦の方はこちら→</span>
+    </button>
     </>
   );
 }

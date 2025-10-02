@@ -17,7 +17,7 @@ interface GuestPostData {
 }
 
 export function GuestRegistration({ appState, updateState }: GuestRegistrationProps) {
-  const [cookies, setCookie, removeCookie] = useCookies(["access_token", "id", "groom_name", "bride_name"]);
+  const [cookies,, removeCookie] = useCookies(["access_token", "id", "groom_name", "bride_name"]);
   const [loading, setLoading] = useState(false);
 
   const uploadGuestsBatch = async (guests: GuestPostData[]): Promise<void> => {
@@ -65,7 +65,7 @@ export function GuestRegistration({ appState, updateState }: GuestRegistrationPr
 
           if (name && name.trim()) {
             guests.push({
-              couple_id: cookies["id"],
+              couple_id: cookies.id,
               guest_name: name.trim(),
               invited_by: inviter?.trim().toLowerCase() === '新婦' ? '新婦' : '新郎',
               community: community?.trim() || '未設定',
@@ -87,7 +87,7 @@ export function GuestRegistration({ appState, updateState }: GuestRegistrationPr
 
   const handleManualAdd = async () => {
     const postGuest = {
-      couple_id: cookies["id"],
+      couple_id: cookies.id,
       guest_name: 'げすと',
       invited_by: '新郎',
       community: '未設定'
@@ -109,7 +109,7 @@ export function GuestRegistration({ appState, updateState }: GuestRegistrationPr
           removeCookie("id");
           removeCookie("groom_name");
           removeCookie("bride_name");
-          updateState({ currentScreen: 'sign-in', userType: null, coupleData: null, message: null, selectedGuest: null });
+          updateState({ currentScreen: 'sign-in', message: null, selectedGuest: null });
         }
         handleLogOut();
         return;

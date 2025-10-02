@@ -29,7 +29,6 @@ export function NameConflict({ appState, updateState }: NameConflictProps) {
           console.log("ログイン成功:", data);
           updateState({
             currentScreen: 'view-message',
-            userType: 'guest',
             message: data.card,
           });
         } else if (data.status === 'not_found') {

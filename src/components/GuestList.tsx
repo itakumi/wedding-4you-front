@@ -14,14 +14,14 @@ export function GuestList({ appState, updateState }: GuestListProps) {
     const [loading, setLoading] = useState<boolean>(true);
     const [selectedType, setSelectedType] = useState('すべて');
     const [selectedCommunity, setSelectedCommunity] = useState('すべて'); 
-    const [cookies, setCookie, removeCookie] = useCookies(["access_token", "id", "groom_name", "bride_name"]);
+    const [cookies,, removeCookie] = useCookies(["access_token", "id", "groom_name", "bride_name"]);
 
     useEffect(() => {
       const fetchGuests = async () => {
         try {
           setLoading(true);
           const data = await callApi(
-            `${process.env.REACT_APP_BACKEND_ENTRYPOINT}/guest/get/${cookies["id"]}`,
+            `${process.env.REACT_APP_BACKEND_ENTRYPOINT}/guest/get/${cookies.id}`,
             'GET',
             null,
             cookies.access_token
@@ -35,7 +35,7 @@ export function GuestList({ appState, updateState }: GuestListProps) {
               removeCookie("id");
               removeCookie("groom_name");
               removeCookie("bride_name");
-              updateState({ currentScreen: 'sign-in', userType: null, coupleData: null, message: null, selectedGuest: null });
+              updateState({ currentScreen: 'sign-in', message: null, selectedGuest: null });
             }
             handleLogOut();
             return;
@@ -47,7 +47,7 @@ export function GuestList({ appState, updateState }: GuestListProps) {
         }
       };
       fetchGuests();
-    }, []); 
+    }, [cookies.access_token, cookies.id, removeCookie, updateState]); 
 
     const communities = useMemo(() => {
     const uniqueCommunities = [...new Set(guests.map(guest => guest.community))];
@@ -56,12 +56,14 @@ export function GuestList({ appState, updateState }: GuestListProps) {
 
     const filteredGuests = useMemo(() => {
         return guests.filter(guest => {
-        const matchesType = selectedType === 'すべて' || guest.invited_by === selectedType;
-        const matchesCommunity = selectedCommunity === 'すべて' || guest.community === selectedCommunity;
+          const matchesType = selectedType === 'すべて' || guest.invited_by === selectedType;
+          const matchesCommunity = selectedCommunity === 'すべて' || guest.community === selectedCommunity;
         return matchesType && matchesCommunity;
         });
     }, [guests, selectedType, selectedCommunity]); 
-
+    console.log(filteredGuests);
+    filteredGuests.sort((a, b) => a.guest_id - b.guest_id);
+    console.log(filteredGuests);
     const createCard = (guest: Guest) => {
       updateState({ currentScreen: 'message-setup', selectedGuest: guest });
     }
@@ -128,7 +130,7 @@ export function GuestList({ appState, updateState }: GuestListProps) {
               <React.Fragment key={guest.guest_id}>
                 <div className='mt-3'/>
                 <div className={styles.guest_item}>
-                  <span className={styles.guest_name}>{guest.guest_name}様</span>
+                  <span className={styles.guest_name}>{guest.guest_id}: {guest.guest_name}様</span>
                   <div className={styles.guest_edit_section}>
                     {guest.has_message ? (
                       <>
