@@ -129,6 +129,15 @@ export function GuestRegistration({ appState, updateState }: GuestRegistrationPr
     >
       戻る
     </button>
+    <a
+      href={`${process.env.PUBLIC_URL}/sample-guests.csv`}
+      download
+      style={{ textDecoration: 'none' }}
+    >
+      <button type="button">
+        サンプルcsvダウンロード
+      </button>
+    </a>
     <div className="center-container">
       <div className="mt-5" />
       <label className={styles.title_text}>
