@@ -11,23 +11,23 @@ interface MessagePreparationProps {
 export function MessagePreparation({ appState, updateState }: MessagePreparationProps) {
   const templates = [
     {
-      src: 'images/sample_template.png',
-      action: () => updateState({ currentScreen: 'message-input', message: { template_url: 'images/sample_template.png', message_content: '' } }),
+      src: `${process.env.PUBLIC_URL}/templates/sample_template.png`,
+      action: () => updateState({ currentScreen: 'message-input', message: { template_url: `${process.env.PUBLIC_URL}/templates/sample_template.png`, message_content: '' } }),
     },
     {
-      src: 'images/sample_template.png',
+      src: `${process.env.PUBLIC_URL}/templates/sample_template.png`,
       action: () => alert("clicked template!"),
     },
     {
-      src: 'images/sample_template.png',
+      src: `${process.env.PUBLIC_URL}/templates/sample_template.png`,
       action: () => alert("clicked template!"),
     },
     {
-      src: 'images/sample_template.png',
+      src: `${process.env.PUBLIC_URL}/templates/sample_template.png`,
       action: () => alert("clicked template!"),
     },
     {
-      src: 'images/sample_template.png',
+      src: `${process.env.PUBLIC_URL}/templates/sample_template.png`,
       action: () => alert("clicked template!"),
     }
   ];
@@ -49,7 +49,7 @@ export function MessagePreparation({ appState, updateState }: MessagePreparation
           {separateButtons(templates, 2).map((pair, idx) => (
             <div className={styles.template_row} key={idx} >
               {pair.map((template, index) => (
-                <img className={styles.template} onClick={template.action} src={template.src} alt='template'/>
+                <img className={styles.template} key={index} onClick={template.action} src={template.src} alt='template'/>
               ))}
             </div>
           ))}

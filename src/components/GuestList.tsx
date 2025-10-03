@@ -135,12 +135,12 @@ export function GuestList({ appState, updateState }: GuestListProps) {
                     {guest.has_message ? (
                       <>
                         <div className={styles.guest_edit_text} onClick={()=> editCard(guest)}>編集する</div>
-                        <img className={styles.edit_img} onClick={()=> editCard(guest)} src='images/edit.svg' alt='edit'/>
+                        <img className={styles.edit_img} onClick={()=> editCard(guest)} src={`${process.env.PUBLIC_URL}/images/edit.svg`} alt='edit'/>
                       </>
                     ) : (
                       <>
                         <div className={styles.guest_edit_text} onClick={()=> createCard(guest)}>新規作成</div>
-                        <img className={styles.edit_img} onClick={()=> createCard(guest)} src='images/edit.svg' alt='edit'/>
+                        <img className={styles.edit_img} onClick={()=> createCard(guest)} src={`${process.env.PUBLIC_URL}/images/edit.svg`} alt='edit'/>
                       </>
                     )}
                     {guest.has_message ? 1 : 0}

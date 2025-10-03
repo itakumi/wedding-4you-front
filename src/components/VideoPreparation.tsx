@@ -90,7 +90,7 @@ export function VideoPreparation({ appState, updateState }: VideoPreparationProp
               hidden
             />
             <div className={styles.video_upload_icon}>
-              <img src='images/upload_icon.png' alt='upload icon' />
+              <img src={`${process.env.PUBLIC_URL}/images/upload_icon.png`} alt='upload icon' />
               <div className={styles.video_upload_text}>動画アップロード</div>
             </div>
           </label>          

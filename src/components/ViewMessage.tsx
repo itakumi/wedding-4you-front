@@ -20,7 +20,7 @@ export function ViewMessage({ appState, updateState }: ViewMessageProps) {
         {appState.message?.message_content}
         <br />
         {appState.message?.image_url && (
-          <img src={appState.message?.image_url} alt="Card Image" style={{ maxWidth: '100%', height: 'auto' }} />
+          <img src={appState.message?.image_url} alt="" style={{ maxWidth: '100%', height: 'auto' }} />
         )}
         <br />
         {appState.message?.video_url && (
