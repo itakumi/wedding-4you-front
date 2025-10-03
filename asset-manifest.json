@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/wedding-4you-front/static/css/main.9e27b1a6.css",
-    "main.js": "/wedding-4you-front/static/js/main.ee367c46.js",
+    "main.js": "/wedding-4you-front/static/js/main.b11e4022.js",
     "static/js/453.695b63b8.chunk.js": "/wedding-4you-front/static/js/453.695b63b8.chunk.js",
     "index.html": "/wedding-4you-front/index.html",
     "main.9e27b1a6.css.map": "/wedding-4you-front/static/css/main.9e27b1a6.css.map",
-    "main.ee367c46.js.map": "/wedding-4you-front/static/js/main.ee367c46.js.map",
+    "main.b11e4022.js.map": "/wedding-4you-front/static/js/main.b11e4022.js.map",
     "453.695b63b8.chunk.js.map": "/wedding-4you-front/static/js/453.695b63b8.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.9e27b1a6.css",
-    "static/js/main.ee367c46.js"
+    "static/js/main.b11e4022.js"
   ]
 }
