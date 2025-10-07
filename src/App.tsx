@@ -20,8 +20,11 @@ import './App.css';
 // ユーザー登録完了してメールでのリンクの挙動を確認
 // iconとタイトル
 // csvのvalidationで失敗した場合は、原因詳細をユーザーに伝える
-// template.pngが反映されていない
 // guestテーブルに重複しているかのfieldを追加して、同姓同名の人がいる場合はtrueにする
+// カード削除機能
+// ソート機能
+// ゲスト情報編集機能
+// ゲストCSVアップロードで、一人ひとり進捗を表示した方がわかりやすい？
 
 export type Screen = 'sign-in' | 'onboarding' | 'guest-login' | 'view-message' | 'name-conflict' | 'couple-home' | 'guest-registration' | 'guest-list' | 'message-setup' | 'message-preparation'| 'message-input' | 'message-confirm' | 'video-preparation' | 'image-preparation';
 
